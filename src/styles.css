@@ -12,41 +12,60 @@
 
 /* ---------------------------------------------------------- 1. Design tokens */
 :root {
-  /* Brand palette: a deep slate green for the navigation rail and dark panels,
-     with a warm gold used for every call to action. */
-  --color-primary-900: #2c4a44;
-  --color-primary-800: #35574f;
-  --color-primary-700: #3f6459;
-  --color-primary-600: #4a7a6d;
-  --color-primary-500: #5d8e80;
-  --color-primary-100: #dfeae5;
-  --color-primary-050: #eff4f1;
+  /* Brand palette: a soft "frosted glass" blue. Navy carries headings and
+     ink, a bright periwinkle blue is the primary, and sky blue is the accent
+     that every gradient fades into. */
+  --color-primary-900: #1e2a5a;
+  --color-primary-800: #24398f;
+  --color-primary-700: #2f4fc4;
+  --color-primary-600: #3b6cf0;
+  --color-primary-500: #5b8cff;
+  --color-primary-100: #dfe8ff;
+  --color-primary-050: #f0f4ff;
 
-  /* Gold is a FILL colour: it always carries dark green text on top.
-     Where gold has to be text itself, --color-accent-700 is the safe step. */
-  --color-accent-700: #8a6111;
-  --color-accent-600: #b4821d;
-  --color-accent-500: #d9a33b;
-  --color-accent-100: #f7ecd6;
+  /* Sky blue: the second series colour and the end of every gradient. */
+  --color-accent-700: #0b6f9c;
+  --color-accent-600: #1594d1;
+  --color-accent-500: #38bdf8;
+  --color-accent-100: #dff3fd;
 
-  --color-danger-700: #99231d;
-  --color-danger-600: #c22f27;
-  --color-danger-100: #fbe4e2;
+  --color-success-700: #17794a;
+  --color-success-100: #ddf6e8;
 
-  --color-info-700: #1d4f87;
-  --color-info-600: #2663a8;
-  --color-info-100: #e3edf9;
+  --color-warning-700: #9a5b0b;
+  --color-warning-100: #fdf0da;
+
+  --color-danger-700: #b4232a;
+  --color-danger-600: #e0434b;
+  --color-danger-100: #fde6e8;
+
+  /* Violet, so "info" stays distinct from the blue primary. */
+  --color-info-700: #4b3bc2;
+  --color-info-600: #6d5ae6;
+  --color-info-100: #ebe7ff;
+
+  /* Gradients — the signature of the look: buttons, active nav, avatars. */
+  --gradient-primary: linear-gradient(135deg, #5b8cff 0%, #38bdf8 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #3b6cf0 0%, #1594d1 100%);
+  --gradient-soft: linear-gradient(135deg, #dfe8ff 0%, #dff3fd 100%);
+  --gradient-deep: linear-gradient(140deg, #1e2a5a 0%, #2f4fc4 60%, #1594d1 100%);
 
   /* Neutrals */
-  --color-ink-900: #1b2a26;
-  --color-ink-700: #35433f;
-  --color-ink-500: #637069;
-  --color-ink-400: #8c968f;
-  --color-line: #e2e7e1;
-  --color-line-strong: #cbd3cb;
+  --color-ink-900: #1e2a5a;
+  --color-ink-700: #3a4673;
+  --color-ink-500: #6b7499;
+  --color-ink-400: #969dbb;
+  --color-line: #e3e8f5;
+  --color-line-strong: #cdd5ea;
   --color-surface: #ffffff;
-  --color-surface-sunken: #f4f6f2;
-  --color-canvas: #eef1ec;
+  --color-surface-sunken: #f3f6fd;
+  --color-canvas: #eef2fb;
+
+  /* Frosted glass panels */
+  --glass-bg: rgb(255 255 255 / 72%);
+  --glass-bg-strong: rgb(255 255 255 / 88%);
+  --glass-border: rgb(255 255 255 / 85%);
+  --glass-blur: blur(16px);
 
   /* Spacing scale, 4 px base — used for every margin and padding */
   --space-1: 0.25rem;
@@ -76,10 +95,12 @@
   --radius-xl: 26px;
   --radius-pill: 999px;
   --border-width: 1px;
-  --shadow-sm: 0 1px 2px rgb(44 74 68 / 5%), 0 1px 3px rgb(44 74 68 / 6%);
-  --shadow-soft: 0 6px 24px rgb(44 74 68 / 8%);
-  --shadow-md: 0 2px 4px rgb(44 74 68 / 4%), 0 10px 26px rgb(44 74 68 / 9%);
-  --shadow-lg: 0 14px 40px rgb(44 74 68 / 14%);
+  --shadow-sm: 0 1px 2px rgb(30 42 90 / 5%), 0 2px 6px rgb(30 42 90 / 6%);
+  /* Soft drop shadow plus a white inner highlight: the neumorphic edge. */
+  --shadow-soft: 0 10px 30px rgb(30 42 90 / 8%), inset 0 1px 0 rgb(255 255 255 / 90%);
+  --shadow-md: 0 2px 6px rgb(30 42 90 / 5%), 0 14px 34px rgb(30 42 90 / 10%);
+  --shadow-lg: 0 18px 48px rgb(30 42 90 / 16%);
+  --shadow-glow: 0 8px 20px rgb(59 108 240 / 30%);
 
   /* Layout */
   --page-max-width: 82rem;
@@ -128,7 +149,14 @@ body {
   font-size: var(--text-base);
   line-height: 1.55;
   color: var(--color-ink-900);
+  /* Pastel blue and sky "blobs" fixed behind everything, so the frosted
+     panels have something soft to blur. */
   background-color: var(--color-canvas);
+  background-image:
+    radial-gradient(40rem 30rem at 0% 0%, rgb(91 140 255 / 16%), transparent 70%),
+    radial-gradient(36rem 28rem at 100% 10%, rgb(56 189 248 / 14%), transparent 70%),
+    radial-gradient(40rem 32rem at 60% 100%, rgb(109 90 230 / 9%), transparent 70%);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -143,7 +171,9 @@ h4 {
 }
 
 h1 {
-  font-size: var(--text-2xl);
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 h2 {
   font-size: var(--text-xl);
@@ -179,7 +209,7 @@ textarea {
 
 /* One visible focus style for the whole application, for keyboard users. */
 :focus-visible {
-  outline: 3px solid var(--color-accent-500);
+  outline: 3px solid var(--color-primary-500);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -283,22 +313,27 @@ textarea {
 }
 
 /* ------------------------------------------------- 4. Component classes */
-/* Surfaces — soft, borderless white panels on the sage canvas. */
+/* Surfaces — frosted glass panels: translucent white, a hairline white edge
+   and a soft navy-tinted shadow, floating on the pastel canvas. */
 .card {
   padding: var(--space-5);
-  background-color: var(--color-surface);
-  border: var(--border-width) solid transparent;
+  background-color: var(--glass-bg);
+  border: var(--border-width) solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .card-flush {
   padding: 0;
   overflow: hidden;
-  background-color: var(--color-surface);
-  border: var(--border-width) solid transparent;
+  background-color: var(--glass-bg);
+  border: var(--border-width) solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .card-header {
@@ -308,7 +343,8 @@ textarea {
   justify-content: space-between;
   gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
-  background-color: var(--color-surface-sunken);
+  background-color: rgb(243 246 253 / 70%);
+  border-bottom: var(--border-width) solid var(--color-line);
 }
 
 .card-body {
@@ -345,7 +381,8 @@ textarea {
   color: var(--color-ink-500);
 }
 
-/* Buttons — pill shaped throughout; gold is the primary call to action. */
+/* Buttons — pill shaped throughout; a blue-to-sky gradient is the primary
+   call to action. */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -359,19 +396,21 @@ textarea {
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  background-color: var(--color-surface);
+  background-color: var(--glass-bg-strong);
   color: var(--color-ink-900);
-  border: var(--border-width) solid var(--color-line-strong);
+  border: var(--border-width) solid var(--color-line);
   border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
   transition:
     background-color var(--transition),
     border-color var(--transition),
+    box-shadow var(--transition),
     color var(--transition);
 }
 
 .btn:hover:not(:disabled) {
-  background-color: var(--color-surface-sunken);
-  border-color: var(--color-ink-400);
+  background-color: var(--color-surface);
+  border-color: var(--color-line-strong);
 }
 
 .btn:disabled,
@@ -380,20 +419,25 @@ textarea {
   opacity: 0.55;
 }
 
-/* Gold fill, dark green text — the mock-up's SEARCH and BOOK NOW buttons. */
+/* Gradient fill, white text, a soft blue glow underneath. The darker end of
+   the gradient sits under the text so the label keeps its contrast. */
 .btn-primary {
-  color: var(--color-primary-900);
-  background-color: var(--color-accent-500);
-  border-color: var(--color-accent-500);
+  color: #ffffff;
+  background-color: var(--color-primary-600);
+  background-image: var(--gradient-primary-hover);
+  border-color: transparent;
+  box-shadow: var(--shadow-glow);
 }
 
 .btn-primary:hover:not(:disabled) {
-  color: var(--color-primary-900);
-  background-color: var(--color-accent-600);
-  border-color: var(--color-accent-600);
+  color: #ffffff;
+  background-color: var(--color-primary-700);
+  background-image: linear-gradient(135deg, #2f4fc4 0%, #0b6f9c 100%);
+  border-color: transparent;
+  box-shadow: 0 10px 24px rgb(59 108 240 / 38%);
 }
 
-/* The quieter emphasis: the rail's own green. */
+/* The quieter emphasis: deep navy. */
 .btn-dark {
   color: #ffffff;
   background-color: var(--color-primary-900);
@@ -409,7 +453,7 @@ textarea {
 .btn-danger {
   color: var(--color-danger-700);
   background-color: var(--color-danger-100);
-  border-color: #f0c3bf;
+  border-color: #f7c6cb;
 }
 
 .btn-danger:hover:not(:disabled) {
@@ -421,6 +465,7 @@ textarea {
 .btn-ghost {
   background-color: transparent;
   border-color: transparent;
+  box-shadow: none;
   color: var(--color-primary-700);
 }
 
@@ -471,9 +516,10 @@ textarea {
   width: 100%;
   min-height: 2.625rem;
   padding: var(--space-2) var(--space-4);
-  background-color: var(--color-surface);
-  border: var(--border-width) solid var(--color-line-strong);
+  background-color: var(--glass-bg-strong);
+  border: var(--border-width) solid var(--color-line);
   border-radius: var(--radius-pill);
+  box-shadow: inset 0 1px 2px rgb(30 42 90 / 4%);
   transition:
     border-color var(--transition),
     box-shadow var(--transition);
@@ -489,15 +535,16 @@ textarea {
 .input:hover,
 .select:hover,
 .textarea:hover {
-  border-color: var(--color-ink-400);
+  border-color: var(--color-line-strong);
 }
 
 .input:focus,
 .select:focus,
 .textarea:focus {
   outline: none;
-  border-color: var(--color-primary-600);
-  box-shadow: 0 0 0 3px var(--color-primary-100);
+  background-color: var(--color-surface);
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 4px rgb(91 140 255 / 18%);
 }
 
 .input.is-invalid,
@@ -526,9 +573,12 @@ textarea {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
-  background-color: var(--color-surface);
+  background-color: var(--glass-bg);
+  border: var(--border-width) solid var(--glass-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .toolbar__field {
@@ -590,17 +640,16 @@ textarea {
   align-items: center;
   gap: var(--space-1);
   padding: var(--space-1);
-  background-color: var(--color-surface);
+  background-color: rgb(227 232 245 / 60%);
+  border: var(--border-width) solid var(--glass-border);
   border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-sm);
+  box-shadow: inset 0 1px 3px rgb(30 42 90 / 6%);
 }
 
 .segmented__item {
   padding: var(--space-2) var(--space-5);
-  font-size: var(--text-xs);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: var(--text-sm);
+  font-weight: 600;
   color: var(--color-ink-500);
   background-color: transparent;
   border: 0;
@@ -613,21 +662,24 @@ textarea {
 
 .segmented__item:hover {
   color: var(--color-primary-800);
-  background-color: var(--color-primary-050);
+  background-color: rgb(255 255 255 / 60%);
 }
 
+/* The active pill: white, lifted, with blue text — the "30D" / "Age" look. */
 .segmented__item[aria-pressed='true'] {
-  color: #ffffff;
-  background-color: var(--color-primary-900);
+  color: var(--color-primary-700);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
-/* The dark green block used for summaries and confirmations. */
+/* The deep navy-to-sky gradient block used for summaries and confirmations. */
 .panel-dark {
   padding: var(--space-5);
   color: #ffffff;
   background-color: var(--color-primary-900);
+  background-image: var(--gradient-deep);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-md);
 }
 
 .panel-dark h2,
@@ -653,7 +705,7 @@ textarea {
 
 .panel-dark__muted {
   font-size: var(--text-xs);
-  color: #b9cdc6;
+  color: #c9d6ff;
 }
 
 /* Tables — kept inside a scrolling wrapper so a wide report never breaks
@@ -699,8 +751,12 @@ textarea {
   border-bottom: 0;
 }
 
+.table tbody tr {
+  transition: background-color var(--transition);
+}
+
 .table tbody tr:hover {
-  background-color: var(--color-primary-050);
+  background-color: rgb(240 244 255 / 80%);
 }
 
 .table td.wrap {
@@ -726,16 +782,17 @@ textarea {
   white-space: nowrap;
 }
 
+/* Pastel pills, like the reference's "Active" and "Paused" tags. */
 .badge-open {
-  color: var(--color-primary-800);
-  background-color: var(--color-primary-100);
-  border-color: #c8ded7;
+  color: var(--color-success-700);
+  background-color: var(--color-success-100);
+  border-color: #bfead2;
 }
 
 .badge-urgent {
-  color: var(--color-accent-700);
-  background-color: var(--color-accent-100);
-  border-color: #ecd6ab;
+  color: var(--color-warning-700);
+  background-color: var(--color-warning-100);
+  border-color: #f6d9a8;
 }
 
 .badge-closed {
@@ -747,13 +804,13 @@ textarea {
 .badge-full {
   color: var(--color-danger-700);
   background-color: var(--color-danger-100);
-  border-color: #f0c3bf;
+  border-color: #f7c6cb;
 }
 
 .badge-info {
   color: var(--color-info-700);
   background-color: var(--color-info-100);
-  border-color: #c9ddf2;
+  border-color: #d6cffb;
 }
 
 /* Definition lists used for activity details */
@@ -787,7 +844,7 @@ textarea {
   }
 
   h1 {
-    font-size: var(--text-xl);
+    font-size: var(--text-2xl);
   }
 
   .card,

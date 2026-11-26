@@ -1,7 +1,12 @@
 <article class="stat" [class]="'stat--' + tone()">
-  <p class="stat__label">{{ label() }}</p>
-  <p class="stat__value">{{ value() }}</p>
-  @if (hint()) {
-    <p class="stat__hint">{{ hint() }}</p>
-  }
+  <!-- A tinted icon tile, as in the reference KPI cards. Purely decorative. -->
+  <span class="stat__icon" aria-hidden="true"></span>
+
+  <div class="stat__text">
+    <p class="stat__label">{{ label() }}</p>
+    <p class="stat__value">{{ value() }}</p>
+    @if (hint()) {
+      <p class="stat__hint">{{ hint() }}</p>
+    }
+  </div>
 </article>

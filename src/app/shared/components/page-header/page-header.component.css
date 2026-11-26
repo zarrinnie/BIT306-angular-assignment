@@ -15,13 +15,19 @@
   min-width: 0;
 }
 
-/* The eyebrow is the one place gold is used as text, at its safe step. */
+/* The eyebrow reads as a friendly line above the title ("Welcome back"). */
 .page-header__text .section-title {
-  color: var(--color-accent-700);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-primary-700);
 }
 
 .page-header__text h1 {
   font-size: var(--text-3xl);
+  font-weight: 800;
+  color: var(--color-ink-900);
 }
 
 .page-header__actions {

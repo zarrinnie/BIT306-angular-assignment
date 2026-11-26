@@ -27,11 +27,11 @@ import { ActivityView } from '../../../core/models';
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
 /** Colours taken from the application's design tokens. */
-const COLOR_TAKEN = '#4a7a6d'; // --color-primary-600
-const COLOR_TRACK = '#dfeae5'; // --color-primary-100, a lighter step of the same ramp
+const COLOR_TAKEN = '#3b6cf0'; // --color-primary-600
+const COLOR_TRACK = '#dfe8ff'; // --color-primary-100, a lighter step of the same ramp
 const COLOR_SURFACE = '#ffffff';
-const COLOR_GRID = '#e2e7e1'; // --color-line
-const COLOR_INK = '#637069'; // --color-ink-500
+const COLOR_GRID = '#e3e8f5'; // --color-line
+const COLOR_INK = '#6b7499'; // --color-ink-500
 
 /** Pixels of chart height per activity, plus room for the axis. */
 const ROW_HEIGHT = 34;
@@ -168,7 +168,7 @@ export class UtilisationChartComponent {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#1b2a26',
+            backgroundColor: '#1e2a5a',
             padding: 10,
             displayColors: false,
             callbacks: {

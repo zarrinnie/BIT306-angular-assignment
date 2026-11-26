@@ -22,6 +22,8 @@
 .scan__icon--ok {
   color: #ffffff;
   background-color: var(--color-primary-600);
+  background-image: var(--gradient-primary-hover);
+  box-shadow: var(--shadow-glow);
 }
 
 .scan__icon--error {
@@ -47,11 +49,12 @@
   text-align: left;
 }
 
-/* A completed check-in turns the whole card into the dark green panel, so
+/* A completed check-in turns the whole card into the navy gradient panel, so
    the coordinator can see across the desk that the scan was accepted. */
 .scan--success {
   color: #ffffff;
   background-color: var(--color-primary-900);
+  background-image: var(--gradient-deep);
 }
 
 .scan--success .scan__heading,
@@ -61,17 +64,18 @@
 
 .scan--success .muted,
 .scan--success .detail-list dt {
-  color: #b9cdc6;
+  color: #c9d6ff;
 }
 
 .scan--success .scan__facts {
   color: #ffffff;
-  background-color: var(--color-primary-800);
+  background-color: rgb(255 255 255 / 14%);
 }
 
 .scan--success .scan__icon--ok {
-  color: var(--color-primary-900);
-  background-color: var(--color-accent-500);
+  color: var(--color-primary-800);
+  background-color: #ffffff;
+  background-image: none;
 }
 
 .scan .row {

@@ -29,7 +29,7 @@ export class SlotMeterComponent {
     Math.max(0, this.maxEmployees() - this.slotsTaken()),
   );
 
-  /** Green while there is room, amber when nearly full, red when full. */
+  /** Blue while there is room, amber when nearly full, red when full. */
   readonly tone = computed(() => {
     if (this.slotsRemaining() === 0) {
       return 'full';

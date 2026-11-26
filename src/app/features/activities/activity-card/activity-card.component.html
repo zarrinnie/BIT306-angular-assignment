@@ -1,0 +1,76 @@
+<article class="activity">
+  <!-- 1. Who is running it -->
+  <div class="activity__ngo">
+    <p class="activity__mark" aria-hidden="true">{{ monogram() }}</p>
+    <p class="activity__ngo-name">{{ activity().ngoName }}</p>
+  </div>
+
+  <!-- 2. What it is -->
+  <div class="activity__main">
+    <div class="activity__heading">
+      <h3 class="activity__title">
+        <a [routerLink]="['/activities', activity().id]">{{ activity().activityTitle }}</a>
+      </h3>
+      <app-status-badge [activity]="activity()" />
+    </div>
+    <p class="activity__meta">
+      <span class="activity__type">{{ activity().serviceType }}</span>
+      <span class="muted">{{ activity().location }}</span>
+    </p>
+  </div>
+
+  <!-- 3. When it runs -->
+  <div class="activity__when">
+    <p class="activity__time">{{ activity().startTime }}</p>
+    <p class="activity__span">
+      <span class="activity__duration">
+        {{ activity().startTime | duration: activity().endTime }}
+      </span>
+      <span class="activity__rule" aria-hidden="true"></span>
+      <span class="activity__date">{{ activity().activityDate | date: 'EEE, d MMM' }}</span>
+    </p>
+    <p class="activity__time">{{ activity().endTime }}</p>
+  </div>
+
+  <!-- 4. Availability and the call to action -->
+  <div class="activity__action">
+    <p class="activity__slots">
+      <strong>{{ activity().availability.slotsRemaining }}</strong>
+      <span class="muted text-xs">of {{ activity().maxEmployees }} slots left</span>
+    </p>
+
+    <app-slot-meter
+      [slotsTaken]="activity().slotsTaken"
+      [maxEmployees]="activity().maxEmployees"
+      [compact]="true"
+    />
+
+    <p class="activity__cutoff text-xs">
+      <span class="muted">Registration</span>
+      <strong [class.activity__cutoff--closed]="activity().availability.isClosed">
+        {{ activity().registrationCutOff | timeRemaining }}
+      </strong>
+    </p>
+
+    <div class="activity__buttons">
+      @if (registered()) {
+        <span class="badge badge-open">You are registered</span>
+      } @else if (activity().availability.isOpenForRegistration) {
+        <button
+          type="button"
+          class="btn btn-sm btn-primary"
+          (click)="register.emit(activity())"
+          [disabled]="busy()"
+        >
+          {{ busy() ? 'Registering…' : 'Register' }}
+        </button>
+      } @else {
+        <button type="button" class="btn btn-sm" disabled>
+          {{ activity().availability.isFull ? 'No slots left' : 'Closed' }}
+        </button>
+      }
+
+      <a class="btn btn-sm btn-ghost" [routerLink]="['/activities', activity().id]">Details</a>
+    </div>
+  </div>
+</article>

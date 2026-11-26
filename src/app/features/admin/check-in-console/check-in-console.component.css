@@ -1,0 +1,56 @@
+/* The QR panel and the desk panel sit side by side on a wide screen. */
+.console {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+
+.console__qr {
+  flex: 1 1 22rem;
+  min-width: 0;
+}
+
+.console__desk {
+  flex: 2 1 26rem;
+  min-width: 0;
+}
+
+.qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-4);
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.qr img {
+  width: 100%;
+  max-width: 16rem;
+  height: auto;
+}
+
+.qr code {
+  padding: 0 var(--space-1);
+  font-size: var(--text-xs);
+  background-color: var(--color-surface-sunken);
+  border-radius: var(--radius-sm);
+}
+
+.desk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.block {
+  display: block;
+}
+
+#checkin-url {
+  font-size: var(--text-xs);
+}

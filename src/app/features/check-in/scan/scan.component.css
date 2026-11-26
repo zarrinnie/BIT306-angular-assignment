@@ -1,0 +1,79 @@
+.scan {
+  max-width: 32rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.scan__heading {
+  font-size: var(--text-2xl);
+}
+
+.scan__icon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto;
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.scan__icon--ok {
+  color: #ffffff;
+  background-color: var(--color-primary-600);
+}
+
+.scan__icon--error {
+  color: #ffffff;
+  background-color: var(--color-danger-600);
+}
+
+/* Centred definition list reads better than left-aligned on this page. */
+.scan__facts {
+  justify-content: center;
+  text-align: left;
+  padding: var(--space-4);
+  background-color: var(--color-surface-sunken);
+  border-radius: var(--radius-lg);
+}
+
+.scan__error {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-danger-700);
+  background-color: var(--color-danger-100);
+  border-radius: var(--radius-lg);
+  text-align: left;
+}
+
+/* A completed check-in turns the whole card into the dark green panel, so
+   the coordinator can see across the desk that the scan was accepted. */
+.scan--success {
+  color: #ffffff;
+  background-color: var(--color-primary-900);
+}
+
+.scan--success .scan__heading,
+.scan--success strong {
+  color: #ffffff;
+}
+
+.scan--success .muted,
+.scan--success .detail-list dt {
+  color: #b9cdc6;
+}
+
+.scan--success .scan__facts {
+  color: #ffffff;
+  background-color: var(--color-primary-800);
+}
+
+.scan--success .scan__icon--ok {
+  color: var(--color-primary-900);
+  background-color: var(--color-accent-500);
+}
+
+.scan .row {
+  justify-content: center;
+}

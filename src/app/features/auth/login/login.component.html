@@ -1,0 +1,81 @@
+<div class="login">
+  <!-- Left: what the dashboard is for. Right: the form itself. -->
+  <section class="login__intro">
+    <p class="login__eyebrow">Corporate Social Responsibility</p>
+    <h1 class="login__title">Service Day Dashboard</h1>
+    <p class="login__lead">
+      One place to see which NGOs are taking part, how many volunteer slots are left and who has
+      registered — replacing the email threads and spreadsheets used until now.
+    </p>
+
+    <ul class="login__points">
+      <li>Live NGO availability and slot counts</li>
+      <li>Self-service registration, changes and withdrawals before the cut-off</li>
+      <li>Participation monitoring, reminders and QR check-in for administrators</li>
+    </ul>
+  </section>
+
+  <section class="login__panel card">
+    <h2>Sign in</h2>
+    <p class="muted text-sm">Use your company email address and staff password.</p>
+
+    <form class="stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="email">Company email address</label>
+        <input
+          id="email"
+          class="input"
+          type="email"
+          formControlName="email"
+          autocomplete="username"
+          placeholder="name@servicedayco.com"
+          [class.is-invalid]="form.controls.email.touched && form.controls.email.invalid"
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <p class="field-error">Enter a valid email address.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          class="input"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          [class.is-invalid]="form.controls.password.touched && form.controls.password.invalid"
+        />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <p class="field-error">Your password is at least six characters long.</p>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <p class="login__error" role="alert">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="submitting()">
+        {{ submitting() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+
+    <div class="login__demo">
+      <h3 class="section-title">Demonstration accounts</h3>
+      <ul class="login__accounts">
+        @for (account of demoAccounts; track account.email) {
+          <li class="login__account">
+            <div class="grow">
+              <p class="text-sm"><strong>{{ account.role }}</strong> — {{ account.name }}</p>
+              <p class="text-xs muted">{{ account.description }}</p>
+              <p class="text-xs muted">{{ account.email }} / {{ account.password }}</p>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary" (click)="useAccount(account)">
+              Use
+            </button>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+</div>

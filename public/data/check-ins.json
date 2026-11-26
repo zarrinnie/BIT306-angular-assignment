@@ -1,0 +1,119 @@
+[
+  {
+    "id": "C005",
+    "activityId": "A000",
+    "employeeId": "U006",
+    "employeeName": "Chong Wei Ming",
+    "department": "Operations",
+    "arrivalTime": "2026-10-24T07:52:00",
+    "method": "qr"
+  },
+  {
+    "id": "C013",
+    "activityId": "A000",
+    "employeeId": "U018",
+    "employeeName": "Aisyah Sofea",
+    "department": "Operations",
+    "arrivalTime": "2026-10-24T07:52:00",
+    "method": "qr"
+  },
+  {
+    "id": "C009",
+    "activityId": "A000",
+    "employeeId": "U021",
+    "employeeName": "Samuel Raj",
+    "department": "Customer Service",
+    "arrivalTime": "2026-10-24T07:59:00",
+    "method": "qr"
+  },
+  {
+    "id": "C004",
+    "activityId": "A000",
+    "employeeId": "U016",
+    "employeeName": "Lavanya Suresh",
+    "department": "Human Resources",
+    "arrivalTime": "2026-10-24T08:04:00",
+    "method": "qr"
+  },
+  {
+    "id": "C008",
+    "activityId": "A000",
+    "employeeId": "U004",
+    "employeeName": "Siti Nur Fatimah",
+    "department": "Human Resources",
+    "arrivalTime": "2026-10-24T08:06:00",
+    "method": "qr"
+  },
+  {
+    "id": "C010",
+    "activityId": "A000",
+    "employeeId": "U008",
+    "employeeName": "Tan Mei Ling",
+    "department": "Finance",
+    "arrivalTime": "2026-10-24T08:10:00",
+    "method": "qr"
+  },
+  {
+    "id": "C011",
+    "activityId": "A000",
+    "employeeId": "U024",
+    "employeeName": "Zarina Abdullah",
+    "department": "Sales",
+    "arrivalTime": "2026-10-24T08:16:00",
+    "method": "manual"
+  },
+  {
+    "id": "C006",
+    "activityId": "A000",
+    "employeeId": "U015",
+    "employeeName": "Muhammad Haikal",
+    "department": "Sales",
+    "arrivalTime": "2026-10-24T08:21:00",
+    "method": "manual"
+  },
+  {
+    "id": "C007",
+    "activityId": "A000",
+    "employeeId": "U009",
+    "employeeName": "Arif Danial",
+    "department": "Operations",
+    "arrivalTime": "2026-10-24T08:21:00",
+    "method": "qr"
+  },
+  {
+    "id": "C012",
+    "activityId": "A000",
+    "employeeId": "U010",
+    "employeeName": "Priya Ramasamy",
+    "department": "Legal",
+    "arrivalTime": "2026-10-24T08:24:00",
+    "method": "qr"
+  },
+  {
+    "id": "C001",
+    "activityId": "A000",
+    "employeeId": "U002",
+    "employeeName": "Alia Hassan",
+    "department": "Information Technology",
+    "arrivalTime": "2026-10-24T08:26:00",
+    "method": "manual"
+  },
+  {
+    "id": "C002",
+    "activityId": "A000",
+    "employeeId": "U003",
+    "employeeName": "Daniel Lim",
+    "department": "Finance",
+    "arrivalTime": "2026-10-24T08:28:00",
+    "method": "qr"
+  },
+  {
+    "id": "C003",
+    "activityId": "A000",
+    "employeeId": "U025",
+    "employeeName": "Vincent Ng",
+    "department": "Finance",
+    "arrivalTime": "2026-10-24T08:30:00",
+    "method": "qr"
+  }
+]

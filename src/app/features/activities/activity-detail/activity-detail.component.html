@@ -1,0 +1,171 @@
+<div class="page stack">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/activities">Opportunities</a>
+    <span aria-hidden="true">/</span>
+    <span>{{ activity()?.activityTitle ?? 'Activity' }}</span>
+  </nav>
+
+  @if (notFound()) {
+    <app-empty-state
+      title="Activity not available"
+      message="This Service Day activity has been removed by the administrator, or the address is incorrect."
+    >
+      <a class="btn btn-primary" routerLink="/activities">Back to opportunities</a>
+    </app-empty-state>
+  } @else if (!activity()) {
+    <app-loading-spinner label="Loading activity…" />
+  } @else {
+    @let item = activity()!;
+
+    <article class="detail">
+      <header class="detail__head">
+        <div class="grow">
+          <p class="detail__ngo">{{ item.ngoName }}</p>
+          <h1>{{ item.activityTitle }}</h1>
+          <p class="row detail__tags">
+            <app-status-badge [activity]="item" />
+            <span class="badge badge-info">{{ item.serviceType }}</span>
+          </p>
+        </div>
+      </header>
+
+      <section class="detail__body">
+        <div class="detail__main stack">
+          <section>
+            <h2 class="section-title">About this activity</h2>
+            <p class="detail__description">{{ item.description }}</p>
+          </section>
+
+          <section>
+            <h2 class="section-title">Schedule and venue</h2>
+            <dl class="detail-list">
+              <div>
+                <dt>Date</dt>
+                <dd>{{ item.activityDate | date: 'EEEE, d MMMM y' }}</dd>
+              </div>
+              <div>
+                <dt>Time</dt>
+                <dd>{{ item.startTime }} – {{ item.endTime }}</dd>
+              </div>
+              <div>
+                <dt>Duration</dt>
+                <dd>{{ item.startTime | duration: item.endTime }}</dd>
+              </div>
+              <div>
+                <dt>Location</dt>
+                <dd>{{ item.location }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section>
+            <h2 class="section-title">NGO contact</h2>
+            <dl class="detail-list">
+              <div>
+                <dt>Contact person</dt>
+                <dd>{{ item.contactPerson }}</dd>
+              </div>
+              <div>
+                <dt>Email</dt>
+                <dd><a [href]="'mailto:' + item.contactEmail">{{ item.contactEmail }}</a></dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+
+        <!-- Registration panel -->
+        <aside class="detail__aside">
+          <div class="card stack">
+            <div>
+              <h2 class="section-title">Slot availability</h2>
+              <app-slot-meter [slotsTaken]="item.slotsTaken" [maxEmployees]="item.maxEmployees" />
+            </div>
+
+            <dl class="detail__cutoff">
+              <dt>Registration cut-off</dt>
+              <dd>
+                {{ item.registrationCutOff | date: 'EEE, d MMM y, HH:mm' }}
+                <span
+                  class="text-xs"
+                  [class.muted]="!item.availability.isClosed"
+                  [class.detail__closed]="item.availability.isClosed"
+                >
+                  {{ item.registrationCutOff | timeRemaining }}
+                </span>
+              </dd>
+            </dl>
+
+            @if (myRegistration()) {
+              <p class="detail__registered">
+                You are registered for this activity.
+                @if (myRegistration()!.canBeEdited) {
+                  <span class="muted text-xs">
+                    You may change or withdraw until the cut-off.
+                  </span>
+                }
+              </p>
+
+              <div class="stack-tight">
+                <a class="btn btn-block" routerLink="/my-registrations">Change activity</a>
+                @if (myRegistration()!.canBeEdited) {
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-block"
+                    (click)="confirmWithdraw.set(true)"
+                    [disabled]="busy()"
+                  >
+                    Withdraw
+                  </button>
+                } @else {
+                  <p class="text-xs muted">
+                    The cut-off has passed, so this registration can no longer be changed. Contact
+                    the Service Day administrator if you cannot attend.
+                  </p>
+                }
+              </div>
+            } @else if (refusalReason()) {
+              <p class="detail__refusal" role="status">{{ refusalReason() }}</p>
+              <a class="btn btn-block" routerLink="/activities">See other activities</a>
+            } @else if (isAdministrator()) {
+              <p class="text-sm muted">
+                You are signed in as an administrator. Registration is available to employee
+                accounts.
+              </p>
+              <a class="btn btn-block" [routerLink]="['/admin/activities', item.id, 'edit']">
+                Edit this activity
+              </a>
+            } @else {
+              <button
+                type="button"
+                class="btn btn-primary btn-block"
+                (click)="register()"
+                [disabled]="busy()"
+              >
+                {{ busy() ? 'Registering…' : 'Register for this activity' }}
+              </button>
+              <p class="text-xs muted">
+                A confirmation message is sent to your inbox straight away. You can change or
+                withdraw until the cut-off.
+              </p>
+            }
+          </div>
+        </aside>
+      </section>
+    </article>
+
+    <app-confirm-dialog
+      [open]="confirmWithdraw()"
+      heading="Withdraw from this activity?"
+      [message]="
+        'Your slot on ' +
+        item.activityTitle +
+        ' will be returned to the pool and offered to other employees. You can register again later if a slot is still free.'
+      "
+      confirmLabel="Withdraw"
+      [destructive]="true"
+      [busy]="busy()"
+      (confirmed)="withdraw()"
+      (cancelled)="confirmWithdraw.set(false)"
+    />
+  }
+</div>

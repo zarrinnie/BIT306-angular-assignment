@@ -1,0 +1,79 @@
+<div class="page">
+  <section class="scan card stack" [class.scan--success]="record()">
+    @if (record()) {
+      <!-- Successful check-in -->
+      <p class="scan__icon scan__icon--ok" aria-hidden="true">✓</p>
+      <h1 class="scan__heading">You are checked in</h1>
+      <p class="muted">
+        Your arrival has been recorded for
+        <strong>{{ activity()?.activityTitle }}</strong>.
+      </p>
+
+      <dl class="detail-list scan__facts">
+        <div>
+          <dt>Employee</dt>
+          <dd>{{ record()!.employeeName }}</dd>
+        </div>
+        <div>
+          <dt>Arrival time</dt>
+          <dd>{{ record()!.arrivalTime | date: 'd MMM y, HH:mm:ss' }}</dd>
+        </div>
+        <div>
+          <dt>Method</dt>
+          <dd>QR code scan</dd>
+        </div>
+      </dl>
+
+      <p class="text-sm muted">
+        Please report to the NGO's coordinator for your briefing. Thank you for volunteering.
+      </p>
+      <a class="btn btn-primary" routerLink="/my-registrations">Back to my registrations</a>
+    } @else if (errorMessage()) {
+      <!-- Refused: wrong code, not registered, or already checked in -->
+      <p class="scan__icon scan__icon--error" aria-hidden="true">!</p>
+      <h1 class="scan__heading">Check-in not completed</h1>
+      <p class="scan__error" role="alert">{{ errorMessage() }}</p>
+      <div class="row">
+        <a class="btn" routerLink="/my-registrations">My registrations</a>
+        <button type="button" class="btn btn-primary" (click)="confirm()" [disabled]="busy()">
+          Try again
+        </button>
+      </div>
+    } @else if (!activity()) {
+      <app-loading-spinner label="Checking the code…" />
+    } @else {
+      <!-- Confirmation step -->
+      @let item = activity()!;
+      <p class="section-title">Service Day check-in</p>
+      <h1 class="scan__heading">{{ item.activityTitle }}</h1>
+      <p class="muted">{{ item.ngoName }}</p>
+
+      <dl class="detail-list scan__facts">
+        <div>
+          <dt>Date</dt>
+          <dd>{{ item.activityDate | date: 'EEE, d MMM y' }}</dd>
+        </div>
+        <div>
+          <dt>Time</dt>
+          <dd>{{ item.startTime }} – {{ item.endTime }}</dd>
+        </div>
+        <div>
+          <dt>Location</dt>
+          <dd>{{ item.location }}</dd>
+        </div>
+        <div>
+          <dt>Checking in as</dt>
+          <dd>{{ currentUser()?.fullName }}</dd>
+        </div>
+      </dl>
+
+      <button type="button" class="btn btn-primary btn-block" (click)="confirm()" [disabled]="busy()">
+        {{ busy() ? 'Recording your arrival…' : 'Confirm my check-in' }}
+      </button>
+      <p class="text-xs muted">
+        The system records the time you confirm. Only employees with a registration for this
+        activity can check in.
+      </p>
+    }
+  </section>
+</div>

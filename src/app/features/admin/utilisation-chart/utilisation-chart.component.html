@@ -1,0 +1,17 @@
+<figure class="chart">
+  <figcaption class="chart__caption">
+    <h2>Slot utilisation by activity</h2>
+    <p class="text-xs muted">
+      The solid portion of each bar is the slots taken and the pale portion the slots still
+      available. Ordered with the fullest activities first.
+    </p>
+  </figcaption>
+
+  @if (rows().length === 0) {
+    <p class="text-sm muted">No approved activities to chart yet.</p>
+  } @else {
+    <div class="chart__canvas" [style.height.px]="chartHeight()">
+      <canvas #canvas role="img" [attr.aria-label]="summaryLabel()"></canvas>
+    </div>
+  }
+</figure>

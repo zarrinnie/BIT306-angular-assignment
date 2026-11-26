@@ -1,0 +1,227 @@
+[
+  {
+    "id": "U001",
+    "staffId": "ADM-001",
+    "fullName": "Nurul Aisyah Rahman",
+    "email": "admin@servicedayco.com",
+    "department": "Human Resources",
+    "role": "administrator",
+    "password": "admin123"
+  },
+  {
+    "id": "U002",
+    "staffId": "EMP-002",
+    "fullName": "Alia Hassan",
+    "email": "alia.hassan@servicedayco.com",
+    "department": "Information Technology",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U003",
+    "staffId": "EMP-003",
+    "fullName": "Daniel Lim",
+    "email": "daniel.lim@servicedayco.com",
+    "department": "Finance",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U004",
+    "staffId": "EMP-004",
+    "fullName": "Siti Nur Fatimah",
+    "email": "siti.fatimah@servicedayco.com",
+    "department": "Human Resources",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U005",
+    "staffId": "EMP-005",
+    "fullName": "Rajesh Kumar",
+    "email": "rajesh.kumar@servicedayco.com",
+    "department": "Information Technology",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U006",
+    "staffId": "EMP-006",
+    "fullName": "Chong Wei Ming",
+    "email": "chong.ming@servicedayco.com",
+    "department": "Operations",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U007",
+    "staffId": "EMP-007",
+    "fullName": "Nurul Izzati",
+    "email": "nurul.izzati@servicedayco.com",
+    "department": "Marketing",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U008",
+    "staffId": "EMP-008",
+    "fullName": "Tan Mei Ling",
+    "email": "tan.ling@servicedayco.com",
+    "department": "Finance",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U009",
+    "staffId": "EMP-009",
+    "fullName": "Arif Danial",
+    "email": "arif.danial@servicedayco.com",
+    "department": "Operations",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U010",
+    "staffId": "EMP-010",
+    "fullName": "Priya Ramasamy",
+    "email": "priya.ramasamy@servicedayco.com",
+    "department": "Legal",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U011",
+    "staffId": "EMP-011",
+    "fullName": "Joshua Tan",
+    "email": "joshua.tan@servicedayco.com",
+    "department": "Sales",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U012",
+    "staffId": "EMP-012",
+    "fullName": "Farah Nadia",
+    "email": "farah.nadia@servicedayco.com",
+    "department": "Customer Service",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U013",
+    "staffId": "EMP-013",
+    "fullName": "Hafiz Ismail",
+    "email": "hafiz.ismail@servicedayco.com",
+    "department": "Information Technology",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U014",
+    "staffId": "EMP-014",
+    "fullName": "Grace Wong",
+    "email": "grace.wong@servicedayco.com",
+    "department": "Marketing",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U015",
+    "staffId": "EMP-015",
+    "fullName": "Muhammad Haikal",
+    "email": "muhammad.haikal@servicedayco.com",
+    "department": "Sales",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U016",
+    "staffId": "EMP-016",
+    "fullName": "Lavanya Suresh",
+    "email": "lavanya.suresh@servicedayco.com",
+    "department": "Human Resources",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U017",
+    "staffId": "EMP-017",
+    "fullName": "Benjamin Yeoh",
+    "email": "benjamin.yeoh@servicedayco.com",
+    "department": "Finance",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U018",
+    "staffId": "EMP-018",
+    "fullName": "Aisyah Sofea",
+    "email": "aisyah.sofea@servicedayco.com",
+    "department": "Operations",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U019",
+    "staffId": "EMP-019",
+    "fullName": "Kelvin Chua",
+    "email": "kelvin.chua@servicedayco.com",
+    "department": "Information Technology",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U020",
+    "staffId": "EMP-020",
+    "fullName": "Nadia Zulkifli",
+    "email": "nadia.zulkifli@servicedayco.com",
+    "department": "Legal",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U021",
+    "staffId": "EMP-021",
+    "fullName": "Samuel Raj",
+    "email": "samuel.raj@servicedayco.com",
+    "department": "Customer Service",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U022",
+    "staffId": "EMP-022",
+    "fullName": "Wan Aqilah",
+    "email": "wan.aqilah@servicedayco.com",
+    "department": "Marketing",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U023",
+    "staffId": "EMP-023",
+    "fullName": "Lee Jun Hao",
+    "email": "lee.hao@servicedayco.com",
+    "department": "Operations",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U024",
+    "staffId": "EMP-024",
+    "fullName": "Zarina Abdullah",
+    "email": "zarina.abdullah@servicedayco.com",
+    "department": "Sales",
+    "role": "employee",
+    "password": "staff123"
+  },
+  {
+    "id": "U025",
+    "staffId": "EMP-025",
+    "fullName": "Vincent Ng",
+    "email": "vincent.ng@servicedayco.com",
+    "department": "Finance",
+    "role": "employee",
+    "password": "staff123"
+  }
+]

@@ -1,0 +1,106 @@
+<!-- Lets a keyboard user jump straight to the page content. -->
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<div class="shell" [class.shell--anonymous]="!isSignedIn()">
+  @if (isSignedIn()) {
+    <!-- The navigation rail: profile, role-aware links, sign out. -->
+    <aside class="sidebar" [class.sidebar--open]="menuOpen()">
+      <div class="sidebar__bar">
+        <a class="brand" routerLink="/" (click)="closeMenu()">
+          <span class="brand__mark" aria-hidden="true">SD</span>
+          <span class="brand__text">
+            <strong>Service Day</strong>
+            <small>Dashboard</small>
+          </span>
+        </a>
+
+        <button
+          type="button"
+          class="sidebar__toggle"
+          (click)="toggleMenu()"
+          [attr.aria-expanded]="menuOpen()"
+          aria-controls="main-navigation"
+        >
+          <span aria-hidden="true">☰</span>
+          <span class="visually-hidden">Toggle navigation</span>
+        </button>
+      </div>
+
+      <div class="sidebar__panel" id="main-navigation">
+        <!-- Who is signed in -->
+        <div class="profile">
+          <p class="profile__avatar" aria-hidden="true">{{ initials() }}</p>
+          <p class="profile__name">{{ currentUser()?.fullName }}</p>
+          <p class="profile__email">{{ currentUser()?.email }}</p>
+          <p class="profile__role">{{ roleLabel() }}</p>
+        </div>
+
+        <nav class="nav" aria-label="Main">
+          <ul class="nav__list">
+            @for (link of links(); track link.path) {
+              <li>
+                <a
+                  class="nav__link"
+                  [routerLink]="link.path"
+                  routerLinkActive="nav__link--active"
+                  [routerLinkActiveOptions]="{ exact: link.exact }"
+                  (click)="closeMenu()"
+                >
+                  <app-nav-icon [name]="link.icon" />
+                  <span class="nav__label">{{ link.label }}</span>
+                </a>
+              </li>
+            }
+
+            <li>
+              <a
+                class="nav__link"
+                routerLink="/inbox"
+                routerLinkActive="nav__link--active"
+                (click)="closeMenu()"
+              >
+                <app-nav-icon name="inbox" />
+                <span class="nav__label">Messages</span>
+                @if (unreadCount() > 0) {
+                  <span class="nav__count" aria-hidden="true">{{ unreadCount() }}</span>
+                  <span class="visually-hidden">{{ unreadCount() }} unread messages</span>
+                }
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar__foot">
+          <button type="button" class="nav__link nav__link--button" (click)="signOut()">
+            <app-nav-icon name="sign-out" />
+            <span class="nav__label">Sign out</span>
+          </button>
+
+          <!-- A quiet caption where the mock-up shows its "active users" block. -->
+          <p class="sidebar__caption">
+            <span class="sidebar__caption-label">Department</span>
+            <span class="sidebar__caption-value">{{ currentUser()?.department }}</span>
+          </p>
+        </div>
+      </div>
+    </aside>
+  }
+
+  <div class="shell__body">
+    <main class="shell__main" id="main-content">
+      <router-outlet />
+    </main>
+
+    <footer class="shell__footer">
+      <p class="text-sm muted">
+        Service Day Dashboard — corporate social responsibility volunteering prototype.
+      </p>
+      <p class="text-xs muted">
+        Front-end prototype built with Angular. Data is simulated in the browser.
+      </p>
+    </footer>
+  </div>
+</div>
+
+<!-- Mounted once, so any service can raise a message from anywhere. -->
+<app-toast-container />

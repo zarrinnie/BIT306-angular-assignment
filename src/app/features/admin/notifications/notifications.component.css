@@ -1,0 +1,39 @@
+.reminder-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background-color: var(--color-surface-sunken);
+  border-radius: var(--radius-lg);
+}
+
+.reminder-form .field {
+  flex: 0 1 12rem;
+  min-width: 0;
+}
+
+.reminder-form .field.grow {
+  flex: 2 1 18rem;
+}
+
+.block {
+  display: block;
+}
+
+.actions {
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+/* A due reminder is tinted so it is obvious what needs sending. */
+.row--due {
+  background-color: var(--color-accent-100);
+}
+
+@media (max-width: 40rem) {
+  .reminder-form .field,
+  .reminder-form .field.grow {
+    flex: 1 1 100%;
+  }
+}

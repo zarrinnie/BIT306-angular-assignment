@@ -1,0 +1,38 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background-color: rgb(17 32 29 / 45%);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(28rem, 100%);
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.panel__heading {
+  font-size: var(--text-lg);
+}
+
+.panel__message {
+  font-size: var(--text-sm);
+  color: var(--color-ink-700);
+}
+
+.panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}

@@ -1,0 +1,41 @@
+/* Flexbox row that becomes a stack once the two halves no longer fit. */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.page-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 22rem;
+  min-width: 0;
+}
+
+/* The eyebrow is the one place gold is used as text, at its safe step. */
+.page-header__text .section-title {
+  color: var(--color-accent-700);
+}
+
+.page-header__text h1 {
+  font-size: var(--text-3xl);
+}
+
+.page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.page-header__actions:empty {
+  display: none;
+}
+
+@media (max-width: 40rem) {
+  .page-header__text h1 {
+    font-size: var(--text-2xl);
+  }
+}

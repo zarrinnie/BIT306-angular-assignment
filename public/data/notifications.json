@@ -1,0 +1,35 @@
+[
+  {
+    "id": "N001",
+    "recipientId": "ALL",
+    "recipientName": "All employees",
+    "activityId": null,
+    "kind": "broadcast",
+    "subject": "Service Day 2026 registration is now open",
+    "message": "Browse the available NGO activities on the Service Day Dashboard and reserve your slot before the stated cut-off date. Each employee may join more than one activity, subject to slot availability.",
+    "createdAt": "2026-10-05T09:00:00",
+    "read": true
+  },
+  {
+    "id": "N002",
+    "recipientId": "ALL",
+    "recipientName": "All employees",
+    "activityId": "A004",
+    "kind": "urgent",
+    "subject": "Last slots: Meal Pack Assembly Line",
+    "message": "Only a few slots remain for the Food Bank Kuala Lumpur meal pack session on 13 December 2026. Register now if you intend to join.",
+    "createdAt": "2026-11-07T11:20:00",
+    "read": false
+  },
+  {
+    "id": "N003",
+    "recipientId": "U002",
+    "recipientName": "Alia Hassan",
+    "activityId": "A005",
+    "kind": "reminder",
+    "subject": "Reminder: Animal Shelter Care on 28 November",
+    "message": "Your Service Day activity at Paws and Claws Shelter takes place on 28 November 2026 at 09:00. Please arrive fifteen minutes early for the safety briefing.",
+    "createdAt": "2026-11-08T09:00:00",
+    "read": false
+  }
+]

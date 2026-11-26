@@ -1,0 +1,154 @@
+/* The segmented control sits on its own line, left aligned under the bar. */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Results and the summary panel: two Flexbox columns that become one stack
+   as soon as the pair no longer fits side by side. */
+.results {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.results__main {
+  flex: 4 1 30rem;
+  min-width: 0;
+}
+
+.results__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.results__count {
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-700);
+}
+
+.results__count strong {
+  color: var(--color-primary-800);
+}
+
+.results__count span {
+  margin-left: var(--space-2);
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 400;
+}
+
+/* --------------------------------------------------------- summary panel */
+.insight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  flex: 1 1 17rem;
+  max-width: 18rem;
+  /* Follows the page while the list beside it scrolls. */
+  position: sticky;
+  top: var(--space-5);
+}
+
+.insight__window {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: var(--border-width) solid var(--color-primary-800);
+}
+
+.insight__to {
+  text-align: right;
+}
+
+.insight__window > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.insight__date {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.insight__arrow {
+  flex: none;
+  color: var(--color-accent-500);
+}
+
+.insight__figures {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+/* Each figure is a row: the label on the left, the number on the right and
+   the caption beneath, so no label is ever broken across two lines. */
+.insight__figures > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  min-width: 0;
+}
+
+.insight__figures .panel-dark__label {
+  flex: 1 1 auto;
+}
+
+.insight__figures .panel-dark__value {
+  flex: none;
+  font-size: var(--text-2xl);
+}
+
+.insight__figures .panel-dark__muted {
+  flex: 1 1 100%;
+}
+
+.insight__figures dd {
+  margin: 0;
+}
+
+.insight__value--accent {
+  color: var(--color-accent-500);
+}
+
+.insight__fill {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* The track is the box; the bar is a child whose width is the percentage. */
+.insight__track {
+  width: 100%;
+  height: 0.5rem;
+  overflow: hidden;
+  background-color: var(--color-primary-800);
+  border-radius: var(--radius-pill);
+}
+
+.insight__bar {
+  height: 100%;
+  background-color: var(--color-accent-500);
+  border-radius: var(--radius-pill);
+  transition: width var(--transition);
+}
+
+@media (max-width: 64rem) {
+  .insight {
+    position: static;
+    max-width: none;
+  }
+}

@@ -1,0 +1,264 @@
+<div class="page stack">
+  <app-page-header
+    eyebrow="Use case 4 — monitor participation"
+    title="Participation and slot utilisation"
+    subtitle="Where the volunteer effort is concentrated, and which activities still need people."
+  >
+    <a class="btn" routerLink="/admin/notifications">Send a reminder</a>
+    <a class="btn btn-primary" routerLink="/admin/check-in">Attendance and check-in</a>
+  </app-page-header>
+
+  <section class="stat-row" aria-label="Participation summary">
+    <app-stat-card
+      label="Slots taken"
+      [value]="utilisation().slotsTaken"
+      [hint]="'of ' + utilisation().slotsOffered + ' offered'"
+      tone="primary"
+    />
+    <app-stat-card
+      label="Employees taking part"
+      [value]="summary().participants"
+      [hint]="summary().coverage + '% of ' + summary().employeeCount + ' staff'"
+      tone="info"
+    />
+    <app-stat-card
+      label="Average activities"
+      [value]="summary().averagePerParticipant"
+      hint="Per participating employee"
+    />
+    <app-stat-card
+      label="Withdrawals"
+      [value]="summary().withdrawals"
+      hint="Slots released before the cut-off"
+      tone="accent"
+    />
+  </section>
+
+  <!-- Three ways of looking at the same registrations -->
+  <div class="row" role="tablist" aria-label="Participation breakdown">
+    <button
+      type="button"
+      class="btn btn-sm"
+      role="tab"
+      [attr.aria-selected]="tab() === 'activity'"
+      [class.btn-primary]="tab() === 'activity'"
+      (click)="setTab('activity')"
+    >
+      By activity
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm"
+      role="tab"
+      [attr.aria-selected]="tab() === 'department'"
+      [class.btn-primary]="tab() === 'department'"
+      (click)="setTab('department')"
+    >
+      By department
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm"
+      role="tab"
+      [attr.aria-selected]="tab() === 'employee'"
+      [class.btn-primary]="tab() === 'employee'"
+      (click)="setTab('employee')"
+    >
+      By employee
+    </button>
+  </div>
+
+  @if (loading() && byActivity().length === 0) {
+    <app-loading-spinner label="Loading participation figures…" />
+  } @else if (tab() === 'activity') {
+    <section class="card-flush">
+      <header class="card-header">
+        <h2>Participation by activity</h2>
+        <p class="text-xs muted">{{ byActivity().length }} approved activities</p>
+      </header>
+      <div class="table-scroll">
+        <table class="table">
+          <caption class="visually-hidden">
+            Slots offered, taken and remaining for each approved activity
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Activity</th>
+              <th scope="col">Date</th>
+              <th scope="col" class="numeric">Offered</th>
+              <th scope="col" class="numeric">Taken</th>
+              <th scope="col" class="numeric">Remaining</th>
+              <th scope="col">Fill rate</th>
+              <th scope="col" class="numeric">Checked in</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of byActivity(); track row.activity.id) {
+              <tr>
+                <td class="wrap">
+                  <strong>{{ row.activity.activityTitle }}</strong>
+                  <span class="block text-xs muted">{{ row.activity.ngoName }}</span>
+                </td>
+                <td>{{ row.activity.activityDate | date: 'd MMM y' }}</td>
+                <td class="numeric">{{ row.activity.maxEmployees }}</td>
+                <td class="numeric">{{ row.activity.slotsTaken }}</td>
+                <td class="numeric">{{ row.activity.availability.slotsRemaining }}</td>
+                <td class="meter-cell">
+                  <app-slot-meter
+                    [slotsTaken]="row.activity.slotsTaken"
+                    [maxEmployees]="row.activity.maxEmployees"
+                    [compact]="true"
+                  />
+                  <span class="text-xs muted">{{ row.activity.availability.fillRate }}%</span>
+                </td>
+                <td class="numeric">{{ row.checkedInCount }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row" colspan="2">Total</th>
+              <td class="numeric">{{ utilisation().slotsOffered }}</td>
+              <td class="numeric">{{ utilisation().slotsTaken }}</td>
+              <td class="numeric">{{ utilisation().slotsRemaining }}</td>
+              <td>{{ utilisation().fillRate }}%</td>
+              <td class="numeric"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+  } @else if (tab() === 'department') {
+    <section class="card-flush">
+      <header class="card-header">
+        <h2>Participation by department</h2>
+        <p class="text-xs muted">Supports balanced workforce planning on the day</p>
+      </header>
+      <div class="table-scroll">
+        <table class="table">
+          <caption class="visually-hidden">
+            Employees and slots taken, grouped by department
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Department</th>
+              <th scope="col" class="numeric">Employees</th>
+              <th scope="col" class="numeric">Slots taken</th>
+              <th scope="col">Share of all slots</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of byDepartment(); track row.department) {
+              <tr>
+                <td>{{ row.department }}</td>
+                <td class="numeric">{{ row.employeeCount }}</td>
+                <td class="numeric">{{ row.slotCount }}</td>
+                <td class="meter-cell">
+                  <app-slot-meter
+                    [slotsTaken]="row.slotCount"
+                    [maxEmployees]="utilisation().slotsTaken"
+                    [compact]="true"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  } @else {
+    <section class="card-flush">
+      <header class="card-header">
+        <div>
+          <h2>Participation by employee</h2>
+          <p class="text-xs muted">
+            {{ nonParticipants().length }} of {{ summary().employeeCount }} employees have not
+            registered for anything yet
+          </p>
+        </div>
+        <a class="btn btn-sm" routerLink="/admin/notifications">Encourage participation</a>
+      </header>
+      <div class="table-scroll">
+        <table class="table">
+          <caption class="visually-hidden">
+            Each employee with the activities they have registered for
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Employee</th>
+              <th scope="col">Department</th>
+              <th scope="col" class="numeric">Activities</th>
+              <th scope="col" class="numeric">Attended</th>
+              <th scope="col">Registered for</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of byEmployee(); track row.employee.id) {
+              <tr [class.row--none]="row.count === 0">
+                <td>
+                  {{ row.employee.fullName }}
+                  <span class="block text-xs muted">{{ row.employee.staffId }}</span>
+                </td>
+                <td>{{ row.employee.department }}</td>
+                <td class="numeric">{{ row.count }}</td>
+                <td class="numeric">{{ row.attended }}</td>
+                <td class="wrap">
+                  @if (row.activities.length === 0) {
+                    <span class="badge badge-closed">Not registered</span>
+                  } @else {
+                    {{ row.activities.join(', ') }}
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  <!-- Attendance, from the QR check-ins -->
+  @if (attendanceReports().length > 0) {
+    <section class="card-flush">
+      <header class="card-header">
+        <div>
+          <h2>Attendance against registrations</h2>
+          <p class="text-xs muted">Recorded by QR check-in on the day of each activity</p>
+        </div>
+        <a class="btn btn-sm" routerLink="/admin/check-in">Check-in console</a>
+      </header>
+      <div class="table-scroll">
+        <table class="table">
+          <caption class="visually-hidden">
+            Registered, checked in and absent counts for each activity
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Activity</th>
+              <th scope="col">Date</th>
+              <th scope="col" class="numeric">Registered</th>
+              <th scope="col" class="numeric">Checked in</th>
+              <th scope="col" class="numeric">Did not attend</th>
+              <th scope="col" class="numeric">Attendance</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (report of attendanceReports(); track report.activityId) {
+              <tr>
+                <td class="wrap">
+                  <strong>{{ report.activityTitle }}</strong>
+                  <span class="block text-xs muted">{{ report.ngoName }}</span>
+                </td>
+                <td>{{ report.activityDate | date: 'd MMM y' }}</td>
+                <td class="numeric">{{ report.registeredCount }}</td>
+                <td class="numeric">{{ report.checkedInCount }}</td>
+                <td class="numeric">{{ report.noShowCount }}</td>
+                <td class="numeric">{{ report.attendanceRate }}%</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</div>

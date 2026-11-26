@@ -1,0 +1,282 @@
+<div class="page stack">
+  <app-page-header
+    eyebrow="Use case 5 — notifications and reminders"
+    title="Notifications"
+    subtitle="Scheduled reminders before each activity, plus announcements and urgent slot updates."
+  >
+    <button type="button" class="btn" (click)="prefillLastSlots()">
+      Draft a "last slots" alert
+    </button>
+  </app-page-header>
+
+  <section class="stat-row" aria-label="Reminder schedule summary">
+    <app-stat-card
+      label="Reminders scheduled"
+      [value]="scheduleSummary().total"
+      hint="Across all approved activities"
+      tone="primary"
+    />
+    <app-stat-card
+      label="Due to be sent"
+      [value]="scheduleSummary().due"
+      hint="Send date has passed"
+      tone="accent"
+    />
+    <app-stat-card label="Already sent" [value]="scheduleSummary().sent" tone="info" />
+    <app-stat-card
+      label="Still pending"
+      [value]="scheduleSummary().pending"
+      hint="Send date not reached"
+    />
+  </section>
+
+  <!-- Reminder schedule -->
+  <section class="card-flush">
+    <header class="card-header">
+      <div>
+        <h2>Reminder schedule</h2>
+        <p class="text-xs muted">
+          Standard lead times are one week, three days and one day before the activity.
+        </p>
+      </div>
+    </header>
+
+    <div class="card-body stack">
+      <form class="reminder-form" [formGroup]="reminderForm" (ngSubmit)="addReminder()" novalidate>
+        <div class="field grow">
+          <label for="reminder-activity">Activity</label>
+          <select id="reminder-activity" class="select" formControlName="activityId">
+            <option value="">Choose an activity…</option>
+            @for (activity of activities(); track activity.id) {
+              <option [value]="activity.id">
+                {{ activity.activityDate | date: 'd MMM' }} — {{ activity.activityTitle }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="reminder-offset">Lead time</label>
+          <select id="reminder-offset" class="select" formControlName="offsetDays">
+            @for (offset of offsets; track offset) {
+              <option [value]="offset">{{ offset }} day(s) before</option>
+            }
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="saving()">Add reminder</button>
+      </form>
+
+      @if (loading() && reminders().length === 0) {
+        <app-loading-spinner label="Loading the reminder schedule…" />
+      } @else if (reminders().length === 0) {
+        <app-empty-state
+          title="No reminders scheduled"
+          message="Add a reminder above, or create an activity — new activities are given the standard schedule automatically."
+        />
+      } @else {
+        <div class="table-scroll">
+          <table class="table">
+            <caption class="visually-hidden">
+              Scheduled reminders with their send date and current state
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Activity</th>
+                <th scope="col">Lead time</th>
+                <th scope="col">Send on</th>
+                <th scope="col" class="numeric">Recipients</th>
+                <th scope="col">State</th>
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (reminder of reminders(); track reminder.id) {
+                <tr [class.row--due]="reminder.isDue">
+                  <td class="wrap">
+                    <strong>{{ reminder.activityTitle }}</strong>
+                    <span class="block text-xs muted">
+                      {{ reminder.ngoName }} · {{ reminder.activityDate | date: 'd MMM y' }}
+                    </span>
+                  </td>
+                  <td>{{ reminder.offsetDays }} day(s) before</td>
+                  <td>{{ reminder.sendAt | date: 'd MMM y, HH:mm' }}</td>
+                  <td class="numeric">{{ reminder.recipientCount }}</td>
+                  <td>
+                    <span class="badge" [class]="'badge-' + reminderStatus(reminder).tone">
+                      {{ reminderStatus(reminder).label }}
+                    </span>
+                    @if (reminder.sent && reminder.sentAt) {
+                      <span class="block text-xs muted">
+                        {{ reminder.sentAt | date: 'd MMM, HH:mm' }}
+                      </span>
+                    }
+                  </td>
+                  <td>
+                    <div class="row-end actions">
+                      @if (!reminder.sent) {
+                        <button
+                          type="button"
+                          class="btn btn-sm"
+                          [class.btn-primary]="reminder.isDue"
+                          (click)="release(reminder)"
+                          [disabled]="saving()"
+                        >
+                          {{ releasingId() === reminder.id ? 'Sending…' : 'Send now' }}
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-danger"
+                          (click)="removing.set(reminder)"
+                          [disabled]="saving()"
+                        >
+                          Remove
+                        </button>
+                      } @else {
+                        <span class="text-xs muted">No action needed</span>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Broadcast composer -->
+  <section class="card stack">
+    <div>
+      <h2>Broadcast a message</h2>
+      <p class="text-xs muted">
+        Send an announcement to every employee, or an update to the participants of one activity.
+      </p>
+    </div>
+
+    <form class="stack" [formGroup]="broadcastForm" (ngSubmit)="sendBroadcast()" novalidate>
+      <div class="field-row">
+        <div class="field">
+          <label for="broadcast-target">Recipients</label>
+          <select id="broadcast-target" class="select" formControlName="activityId">
+            <option value="">All employees</option>
+            @for (activity of activities(); track activity.id) {
+              <option [value]="activity.id">
+                Participants of {{ activity.activityTitle }} ({{ activity.slotsTaken }})
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="broadcast-kind">Message type</label>
+          <select id="broadcast-kind" class="select" formControlName="kind">
+            <option value="broadcast">Announcement</option>
+            <option value="urgent">Urgent update</option>
+            <option value="reminder">Reminder</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="broadcast-subject">Subject</label>
+        <input
+          id="broadcast-subject"
+          class="input"
+          type="text"
+          formControlName="subject"
+          [class.is-invalid]="
+            broadcastForm.controls.subject.touched && broadcastForm.controls.subject.invalid
+          "
+        />
+        @if (broadcastForm.controls.subject.touched && broadcastForm.controls.subject.invalid) {
+          <p class="field-error">A subject line is required.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="broadcast-message">Message</label>
+        <textarea
+          id="broadcast-message"
+          class="textarea"
+          formControlName="message"
+          [class.is-invalid]="
+            broadcastForm.controls.message.touched && broadcastForm.controls.message.invalid
+          "
+        ></textarea>
+        @if (broadcastForm.controls.message.touched && broadcastForm.controls.message.invalid) {
+          <p class="field-error">Write at least twenty characters.</p>
+        }
+      </div>
+
+      <div class="row-end">
+        <button type="submit" class="btn btn-primary" [disabled]="saving()">
+          {{ saving() ? 'Sending…' : 'Send message' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Log of everything sent -->
+  <section class="card-flush">
+    <header class="card-header">
+      <div>
+        <h2>Message log</h2>
+        <p class="text-xs muted">
+          Every automatic confirmation, change notice, reminder and announcement
+        </p>
+      </div>
+      <p class="text-xs muted">{{ messages().length }} messages</p>
+    </header>
+
+    @if (messages().length === 0) {
+      <div class="card-body">
+        <app-empty-state title="Nothing sent yet" />
+      </div>
+    } @else {
+      <div class="table-scroll">
+        <table class="table">
+          <caption class="visually-hidden">
+            Messages the system has sent, newest first
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Sent</th>
+              <th scope="col">Type</th>
+              <th scope="col">Recipient</th>
+              <th scope="col">Subject</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (message of messages().slice(0, 25); track message.id) {
+              <tr>
+                <td>{{ message.createdAt | date: 'd MMM, HH:mm' }}</td>
+                <td>{{ message.kind }}</td>
+                <td>{{ message.recipientName ?? message.recipientId }}</td>
+                <td class="wrap">{{ message.subject }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <app-confirm-dialog
+    [open]="removing() !== null"
+    heading="Remove this reminder?"
+    [message]="
+      'The ' +
+      (removing()?.offsetDays ?? 0) +
+      '-day reminder for ' +
+      (removing()?.activityTitle ?? '') +
+      ' will be deleted from the schedule and will not be sent.'
+    "
+    confirmLabel="Remove reminder"
+    [destructive]="true"
+    [busy]="saving()"
+    (confirmed)="confirmRemoveReminder()"
+    (cancelled)="removing.set(null)"
+  />
+</div>

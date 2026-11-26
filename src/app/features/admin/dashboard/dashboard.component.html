@@ -1,0 +1,200 @@
+<div class="page stack">
+  <app-page-header
+    eyebrow="Administration"
+    title="Service Day overview"
+    subtitle="Live participation and slot utilisation across every participating NGO."
+  >
+    <a class="btn btn-primary" routerLink="/admin/activities/new">Add NGO activity</a>
+    <button type="button" class="btn" (click)="confirmReset.set(true)" [disabled]="resetting()">
+      Reset demo data
+    </button>
+  </app-page-header>
+
+  <!-- Headline figures (Use Case 4) -->
+  <section class="stat-row" aria-label="Slot utilisation">
+    <app-stat-card
+      label="Approved activities"
+      [value]="utilisation().activityCount"
+      [hint]="hints().drafts"
+      tone="primary"
+    />
+    <app-stat-card
+      label="Slots offered"
+      [value]="utilisation().slotsOffered"
+      hint="Total volunteer capacity"
+    />
+    <app-stat-card
+      label="Slots taken"
+      [value]="utilisation().slotsTaken"
+      [hint]="hints().employees"
+      tone="info"
+    />
+    <app-stat-card
+      label="Slots remaining"
+      [value]="utilisation().slotsRemaining"
+      [hint]="hints().full"
+      tone="accent"
+    />
+    <app-stat-card
+      label="Overall fill rate"
+      [value]="utilisation().fillRate + '%'"
+      hint="Taken against offered"
+      tone="primary"
+    />
+  </section>
+
+  <!-- Things that need action -->
+  @if (dueReminders().length > 0 || attention().drafts.length > 0) {
+    <section class="notice" aria-label="Needs attention">
+      <h2 class="section-title">Needs your attention</h2>
+      <ul class="notice__list">
+        @if (dueReminders().length > 0) {
+          <li>
+            <span>
+              {{ dueReminders().length }} scheduled reminder(s) are due and have not been sent.
+            </span>
+            <a class="btn btn-sm" routerLink="/admin/notifications">Review reminders</a>
+          </li>
+        }
+        @for (draft of attention().drafts; track draft.id) {
+          <li>
+            <span>
+              "{{ draft.activityTitle }}" ({{ draft.ngoName }}) is still a draft, so employees
+              cannot see it.
+            </span>
+            <a class="btn btn-sm" [routerLink]="['/admin/activities', draft.id, 'edit']">
+              Review and approve
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <!-- Slot utilisation, charted -->
+  @if (activities().length > 0) {
+    <app-utilisation-chart [activities]="activities()" />
+  }
+
+  <!-- Per-activity utilisation -->
+  <section class="card-flush">
+    <header class="card-header">
+      <div>
+        <h2>Participation by activity</h2>
+        <p class="text-xs muted">Ordered by how full each activity is.</p>
+      </div>
+      <a class="btn btn-sm" routerLink="/admin/participation">Full participation report</a>
+    </header>
+
+    @if (loading() && participation().length === 0) {
+      <app-loading-spinner label="Loading participation figures…" />
+    } @else if (participation().length === 0) {
+      <div class="card-body">
+        <app-empty-state
+          title="No approved activities yet"
+          message="Add an NGO activity and publish it so employees can register."
+        >
+          <a class="btn btn-primary" routerLink="/admin/activities/new">Add NGO activity</a>
+        </app-empty-state>
+      </div>
+    } @else {
+      <div class="table-scroll">
+        <table class="table">
+          <caption class="visually-hidden">
+            Slots taken and remaining for each approved Service Day activity
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Activity</th>
+              <th scope="col">Date</th>
+              <th scope="col">Utilisation</th>
+              <th scope="col" class="numeric">Taken</th>
+              <th scope="col" class="numeric">Left</th>
+              <th scope="col" class="numeric">Checked in</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of participation(); track row.activity.id) {
+              <tr>
+                <td class="wrap">
+                  <a [routerLink]="['/admin/activities', row.activity.id, 'edit']">
+                    {{ row.activity.activityTitle }}
+                  </a>
+                  <span class="block text-xs muted">{{ row.activity.ngoName }}</span>
+                </td>
+                <td>{{ row.activity.activityDate | date: 'd MMM y' }}</td>
+                <td class="meter-cell">
+                  <app-slot-meter
+                    [slotsTaken]="row.activity.slotsTaken"
+                    [maxEmployees]="row.activity.maxEmployees"
+                    [compact]="true"
+                  />
+                  <span class="text-xs muted">{{ row.activity.availability.fillRate }}%</span>
+                </td>
+                <td class="numeric">{{ row.activity.slotsTaken }}</td>
+                <td class="numeric">{{ row.activity.availability.slotsRemaining }}</td>
+                <td class="numeric">{{ row.checkedInCount }}</td>
+                <td><app-status-badge [activity]="row.activity" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <!-- Balance of participation -->
+  <section class="card-grid">
+    <div class="card stack-tight">
+      <h2 class="section-title">Nearly full</h2>
+      @if (attention().closingSoon.length === 0) {
+        <p class="text-sm muted">No activity is down to its last few slots.</p>
+      } @else {
+        <ul class="plain">
+          @for (activity of attention().closingSoon; track activity.id) {
+            <li>
+              <strong>{{ activity.activityTitle }}</strong>
+              <span class="text-xs muted">
+                — {{ activity.availability.slotsRemaining }} slot(s) left,
+                {{ activity.registrationCutOff | timeRemaining }}
+              </span>
+            </li>
+          }
+        </ul>
+        <a class="btn btn-sm" routerLink="/admin/notifications">Broadcast the last slots</a>
+      }
+    </div>
+
+    <div class="card stack-tight">
+      <h2 class="section-title">Under-subscribed</h2>
+      @if (attention().underSubscribed.length === 0) {
+        <p class="text-sm muted">Every open activity is at least 40% full.</p>
+      } @else {
+        <ul class="plain">
+          @for (activity of attention().underSubscribed; track activity.id) {
+            <li>
+              <strong>{{ activity.activityTitle }}</strong>
+              <span class="text-xs muted">
+                — {{ activity.availability.fillRate }}% full,
+                {{ activity.availability.slotsRemaining }} slot(s) free
+              </span>
+            </li>
+          }
+        </ul>
+        <a class="btn btn-sm" routerLink="/admin/notifications">Encourage participation</a>
+      }
+    </div>
+  </section>
+
+  <app-confirm-dialog
+    [open]="confirmReset()"
+    heading="Restore the demonstration data?"
+    message="Every registration, message and check-in made during this session will be discarded and the original seeded data will be loaded again."
+    confirmLabel="Restore data"
+    [destructive]="true"
+    [busy]="resetting()"
+    (confirmed)="resetDemoData()"
+    (cancelled)="confirmReset.set(false)"
+  />
+</div>

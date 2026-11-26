@@ -1,0 +1,33 @@
+@if (open()) {
+  <div class="backdrop" (click)="cancelled.emit()">
+    <!-- stopPropagation keeps a click inside the panel from closing it -->
+    <div
+      class="panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-heading"
+      (click)="$event.stopPropagation()"
+      (keydown.escape)="cancelled.emit()"
+      tabindex="-1"
+    >
+      <h2 class="panel__heading" id="confirm-heading">{{ heading() }}</h2>
+      <p class="panel__message">{{ message() }}</p>
+
+      <div class="panel__actions">
+        <button type="button" class="btn" (click)="cancelled.emit()" [disabled]="busy()">
+          {{ cancelLabel() }}
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [class.btn-danger]="destructive()"
+          [class.btn-primary]="!destructive()"
+          (click)="confirmed.emit()"
+          [disabled]="busy()"
+        >
+          {{ busy() ? 'Working…' : confirmLabel() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

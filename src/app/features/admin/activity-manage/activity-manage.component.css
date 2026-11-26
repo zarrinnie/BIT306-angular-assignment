@@ -1,0 +1,41 @@
+.manage__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.manage__filters .field {
+  flex: 0 1 12rem;
+  min-width: 0;
+}
+
+.manage__filters .field.grow {
+  flex: 2 1 18rem;
+}
+
+.block {
+  display: block;
+}
+
+.slots-cell {
+  min-width: 8rem;
+}
+
+/* Keep the first column from crowding the action buttons out of the table. */
+.table td.wrap {
+  min-width: 12rem;
+  max-width: 18rem;
+}
+
+.actions {
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 40rem) {
+  .manage__filters .field,
+  .manage__filters .field.grow {
+    flex: 1 1 100%;
+  }
+}

@@ -1,0 +1,20 @@
+<div class="meter" [class.meter--compact]="compact()">
+  @if (!compact()) {
+    <p class="meter__figures">
+      <span class="meter__taken">{{ slotsTaken() }}</span>
+      <span class="muted text-sm"> of {{ maxEmployees() }} slots taken</span>
+      <span class="meter__remaining">{{ slotsRemaining() }} left</span>
+    </p>
+  }
+
+  <div
+    class="meter__track"
+    role="progressbar"
+    [attr.aria-valuenow]="slotsTaken()"
+    aria-valuemin="0"
+    [attr.aria-valuemax]="maxEmployees()"
+    [attr.aria-label]="slotsTaken() + ' of ' + maxEmployees() + ' slots taken'"
+  >
+    <div class="meter__fill" [class]="'meter__fill--' + tone()" [style.width.%]="fillRate()"></div>
+  </div>
+</div>

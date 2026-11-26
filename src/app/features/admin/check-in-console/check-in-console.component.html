@@ -1,0 +1,271 @@
+<div class="page stack">
+  <app-page-header
+    eyebrow="Use case 6 — QR code check-in"
+    title="Check-in and attendance"
+    subtitle="Issue a check-in code for an activity, watch arrivals as they happen and review attendance afterwards."
+  >
+    <a class="btn" routerLink="/admin/participation">Participation report</a>
+  </app-page-header>
+
+  <!-- Activity picker -->
+  <section class="card" aria-label="Choose an activity">
+    <div class="field">
+      <label for="checkin-activity">Activity</label>
+      <select
+        id="checkin-activity"
+        class="select"
+        name="checkinActivity"
+        [ngModel]="selectedId()"
+        (ngModelChange)="select($event)"
+      >
+        @for (activity of activities(); track activity.id) {
+          <option [value]="activity.id">
+            {{ activity.activityDate | date: 'd MMM y' }} — {{ activity.activityTitle }}
+            ({{ activity.ngoName }})
+          </option>
+        }
+      </select>
+    </div>
+  </section>
+
+  @if (!selectedActivity()) {
+    <app-empty-state
+      title="No activity selected"
+      message="Choose a Service Day activity to issue its check-in code."
+    />
+  } @else {
+    @let activity = selectedActivity()!;
+
+    <div class="console">
+      <!-- QR code panel -->
+      <section class="card stack console__qr">
+        <div>
+          <h2>Check-in code</h2>
+          <p class="text-xs muted">
+            Display this code at the venue. Scanning it opens the check-in page for
+            "{{ activity.activityTitle }}".
+          </p>
+        </div>
+
+        @if (qrImage()) {
+          <figure class="qr">
+            <img [src]="qrImage()!" [alt]="'QR check-in code for ' + activity.activityTitle" />
+            <figcaption class="text-xs muted">
+              Issued {{ token()?.issuedAt | date: 'd MMM y, HH:mm' }} · code
+              <code>{{ token()?.token }}</code>
+            </figcaption>
+          </figure>
+
+          <div class="field">
+            <label for="checkin-url">Check-in address</label>
+            <input id="checkin-url" class="input" type="text" [value]="token()!.checkInUrl" readonly />
+            <p class="field-hint">
+              Open this address on a phone signed in as an employee to try the scan.
+            </p>
+          </div>
+
+          <div class="row">
+            <button type="button" class="btn" (click)="copyLink()">Copy address</button>
+            <button type="button" class="btn" (click)="generateCode()" [disabled]="busy()">
+              Issue a new code
+            </button>
+          </div>
+        } @else {
+          <p class="text-sm muted">
+            No code has been issued for this activity yet. Issuing a code invalidates any previous
+            one, so a code that has been shared outside the venue stops working.
+          </p>
+          <button type="button" class="btn btn-primary" (click)="generateCode()" [disabled]="busy()">
+            {{ busy() ? 'Issuing…' : 'Generate QR check-in code' }}
+          </button>
+        }
+
+        @if (qrError()) {
+          <p class="field-error">{{ qrError() }}</p>
+        }
+      </section>
+
+      <!-- Desk check-in + figures -->
+      <section class="stack console__desk">
+        @if (report()) {
+          <div class="stat-row">
+            <app-stat-card
+              label="Registered"
+              [value]="report()!.registeredCount"
+              hint="Expected on the day"
+              tone="info"
+            />
+            <app-stat-card
+              label="Checked in"
+              [value]="report()!.checkedInCount"
+              [hint]="report()!.attendanceRate + '% attendance'"
+              tone="primary"
+            />
+            <app-stat-card
+              label="Not yet arrived"
+              [value]="stillExpected().length"
+              hint="Still expected"
+              tone="accent"
+            />
+          </div>
+        }
+
+        <div class="card stack">
+          <div>
+            <h2>Desk check-in</h2>
+            <p class="text-xs muted">
+              For an employee who cannot scan the code — the arrival is recorded as a manual
+              check-in.
+            </p>
+          </div>
+
+          @if (stillExpected().length === 0) {
+            <p class="text-sm muted">
+              Everybody registered for this activity has already been checked in.
+            </p>
+          } @else {
+            <div class="desk">
+              <div class="field grow">
+                <label for="desk-employee">Employee</label>
+                <select
+                  id="desk-employee"
+                  class="select"
+                  name="deskEmployee"
+                  [ngModel]="deskEmployeeId()"
+                  (ngModelChange)="deskEmployeeId.set($event)"
+                >
+                  <option value="">Choose an employee…</option>
+                  @for (registration of stillExpected(); track registration.id) {
+                    <option [value]="registration.employeeId">
+                      {{ registration.employeeName }} — {{ registration.department }}
+                    </option>
+                  }
+                </select>
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="deskCheckIn()"
+                [disabled]="busy()"
+              >
+                {{ busy() ? 'Recording…' : 'Record arrival' }}
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+
+    <!-- Live arrivals -->
+    <section class="card-flush">
+      <header class="card-header">
+        <div>
+          <h2>Live arrivals</h2>
+          <p class="text-xs muted">
+            Refreshes every ten seconds · {{ arrivals().length }} recorded for this activity
+          </p>
+        </div>
+        <div class="row">
+          <button
+            type="button"
+            class="btn btn-sm"
+            [class.btn-primary]="livePolling()"
+            (click)="livePolling.set(!livePolling())"
+            [attr.aria-pressed]="livePolling()"
+          >
+            {{ livePolling() ? 'Live updates on' : 'Live updates off' }}
+          </button>
+          <button type="button" class="btn btn-sm" (click)="refreshNow()">Refresh now</button>
+        </div>
+      </header>
+
+      @if (arrivals().length === 0) {
+        <div class="card-body">
+          <app-empty-state
+            title="Nobody has checked in yet"
+            message="Arrivals appear here as soon as an employee scans the code or is checked in at the desk."
+          />
+        </div>
+      } @else {
+        <div class="table-scroll">
+          <table class="table">
+            <caption class="visually-hidden">
+              Employees who have checked in, most recent first
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Arrival time</th>
+                <th scope="col">Employee</th>
+                <th scope="col">Department</th>
+                <th scope="col">Method</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (record of arrivals(); track record.id) {
+                <tr>
+                  <td>{{ record.arrivalTime | date: 'HH:mm:ss' }}</td>
+                  <td>{{ record.employeeName }}</td>
+                  <td>{{ record.department }}</td>
+                  <td>
+                    <span class="badge" [class]="record.method === 'qr' ? 'badge-open' : 'badge-info'">
+                      {{ record.method === 'qr' ? 'QR scan' : 'Desk' }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    <!-- Post-event reports -->
+    <section class="card-flush">
+      <header class="card-header">
+        <div>
+          <h2>Post-event attendance reports</h2>
+          <p class="text-xs muted">
+            Every activity with registrations, so trends across the programme can be compared
+          </p>
+        </div>
+      </header>
+
+      @if (reports().length === 0) {
+        <div class="card-body"><app-empty-state title="No attendance data yet" /></div>
+      } @else {
+        <div class="table-scroll">
+          <table class="table">
+            <caption class="visually-hidden">
+              Registered, checked in, absent and attendance rate per activity
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Activity</th>
+                <th scope="col">Date</th>
+                <th scope="col" class="numeric">Registered</th>
+                <th scope="col" class="numeric">Checked in</th>
+                <th scope="col" class="numeric">Did not attend</th>
+                <th scope="col" class="numeric">Attendance</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of reports(); track row.activityId) {
+                <tr>
+                  <td class="wrap">
+                    <strong>{{ row.activityTitle }}</strong>
+                    <span class="block text-xs muted">{{ row.ngoName }}</span>
+                  </td>
+                  <td>{{ row.activityDate | date: 'd MMM y' }}</td>
+                  <td class="numeric">{{ row.registeredCount }}</td>
+                  <td class="numeric">{{ row.checkedInCount }}</td>
+                  <td class="numeric">{{ row.noShowCount }}</td>
+                  <td class="numeric">{{ row.attendanceRate }}%</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+</div>

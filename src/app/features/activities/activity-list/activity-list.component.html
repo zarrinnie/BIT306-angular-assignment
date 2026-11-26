@@ -1,0 +1,187 @@
+<div class="page stack">
+  <app-page-header
+    eyebrow="Service Day 2026"
+    title="Volunteering opportunities"
+    subtitle="Choose an NGO activity and reserve a slot before its registration cut-off."
+  >
+    <a class="btn" routerLink="/my-registrations">My registrations</a>
+  </app-page-header>
+
+  <!-- Search capsule: one white bar holding every control, as in the brief. -->
+  <section class="toolbar" aria-label="Filter opportunities">
+    <div class="toolbar__field">
+      <svg
+        class="toolbar__icon"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
+      <span class="grow">
+        <label class="toolbar__label" for="search">Search</label>
+        <input
+          id="search"
+          class="toolbar__control"
+          type="search"
+          placeholder="NGO, activity or location"
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+          name="search"
+        />
+      </span>
+    </div>
+
+    <div class="toolbar__field">
+      <svg
+        class="toolbar__icon"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 21s-7-4.6-7-10a7 7 0 1 1 14 0c0 5.4-7 10-7 10Z" />
+        <circle cx="12" cy="11" r="2.5" />
+      </svg>
+      <span class="grow">
+        <label class="toolbar__label" for="service-type">Service type</label>
+        <select
+          id="service-type"
+          class="toolbar__control"
+          [ngModel]="serviceType()"
+          (ngModelChange)="serviceType.set($event)"
+          name="serviceType"
+        >
+          <option value="">All service types</option>
+          @for (type of serviceTypes; track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </span>
+    </div>
+
+    @if (hasFilters()) {
+      <button type="button" class="btn btn-primary" (click)="clearFilters()">Clear</button>
+    }
+  </section>
+
+  <!-- Availability as a segmented pill control rather than a second select. -->
+  <div class="filter-row">
+    <div class="segmented" role="group" aria-label="Availability">
+      @for (option of availabilityOptions; track option.value) {
+        <button
+          type="button"
+          class="segmented__item"
+          [attr.aria-pressed]="availability() === option.value"
+          (click)="setAvailability(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Results on the left, the dark summary panel on the right. -->
+  <div class="results">
+    <section class="results__main" aria-label="Service Day activities">
+      <p class="results__count">
+        Result <strong>({{ visibleActivities().length }})</strong>
+        <span class="muted text-xs">of {{ summary().totalCount }} approved activities</span>
+      </p>
+
+      @if (loading() && visibleActivities().length === 0) {
+        <app-loading-spinner label="Loading Service Day activities…" />
+      } @else if (error()) {
+        <app-empty-state title="The activities could not be loaded" [message]="error() ?? ''" />
+      } @else if (visibleActivities().length === 0) {
+        <app-empty-state
+          title="No activities match your filters"
+          message="Try a different service type, or clear the filters to see everything on offer."
+        >
+          <button type="button" class="btn btn-primary" (click)="clearFilters()">
+            Clear filters
+          </button>
+        </app-empty-state>
+      } @else {
+        <div class="results__list">
+          @for (activity of visibleActivities(); track activity.id) {
+            <app-activity-card
+              [activity]="activity"
+              [registered]="isRegistered(activity.id)"
+              [busy]="pendingActivityId() === activity.id"
+              (register)="register($event)"
+            />
+          }
+        </div>
+      }
+    </section>
+
+    <aside class="insight panel-dark" aria-label="Availability summary">
+      @if (serviceWindow(); as window) {
+        <div class="insight__window">
+          <div>
+            <p class="panel-dark__label">From</p>
+            <p class="insight__date">{{ window.from | date: 'd MMM' }}</p>
+          </div>
+          <span class="insight__arrow" aria-hidden="true">→</span>
+          <div class="insight__to">
+            <p class="panel-dark__label">To</p>
+            <p class="insight__date">{{ window.to | date: 'd MMM' }}</p>
+          </div>
+        </div>
+      }
+
+      <dl class="insight__figures">
+        <div>
+          <dt class="panel-dark__label">Open activities</dt>
+          <dd class="panel-dark__value">{{ summary().openCount }}</dd>
+          <dd class="panel-dark__muted">Accepting registrations</dd>
+        </div>
+        <div>
+          <dt class="panel-dark__label">Slots available</dt>
+          <dd class="panel-dark__value">{{ summary().slotsRemaining }}</dd>
+          <dd class="panel-dark__muted">Across all open activities</dd>
+        </div>
+        <div>
+          <dt class="panel-dark__label">Closing soon</dt>
+          <dd class="panel-dark__value insight__value--accent">{{ summary().closingSoon }}</dd>
+          <dd class="panel-dark__muted">Three slots or fewer left</dd>
+        </div>
+        <div>
+          <dt class="panel-dark__label">Your registrations</dt>
+          <dd class="panel-dark__value">{{ summary().myCount }}</dd>
+          <dd class="panel-dark__muted">Confirmed for Service Day</dd>
+        </div>
+      </dl>
+
+      <div class="insight__fill">
+        <p class="panel-dark__label">Programme filled</p>
+        <div
+          class="insight__track"
+          role="progressbar"
+          [attr.aria-valuenow]="overallFillRate()"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label="Percentage of all Service Day slots taken"
+        >
+          <div class="insight__bar" [style.width.%]="overallFillRate()"></div>
+        </div>
+        <p class="panel-dark__muted">{{ overallFillRate() }}% of every offered slot is taken.</p>
+      </div>
+
+      <a class="btn btn-primary btn-block" routerLink="/my-registrations">My registrations</a>
+    </aside>
+  </div>
+</div>

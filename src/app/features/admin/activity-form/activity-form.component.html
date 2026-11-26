@@ -1,0 +1,214 @@
+<div class="page stack">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/admin/activities">NGO activity availability</a>
+    <span aria-hidden="true">/</span>
+    <span>{{ isEditing() ? 'Edit activity' : 'Add activity' }}</span>
+  </nav>
+
+  <app-page-header
+    eyebrow="Use case 1 — manage NGO availability"
+    [title]="isEditing() ? 'Edit NGO activity' : 'Add NGO activity'"
+    subtitle="Only approved activities are shown to employees, and registration closes automatically at the cut-off."
+  />
+
+  <form class="form-layout" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <!-- About the NGO and the work -->
+    <fieldset class="card stack">
+      <legend class="section-title">NGO and activity</legend>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="ngoName">NGO name</label>
+          <input
+            id="ngoName"
+            class="input"
+            type="text"
+            formControlName="ngoName"
+            [class.is-invalid]="showError('ngoName')"
+          />
+          @if (showError('ngoName')) {
+            <p class="field-error">The NGO name is required.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="activityTitle">Activity title</label>
+          <input
+            id="activityTitle"
+            class="input"
+            type="text"
+            formControlName="activityTitle"
+            [class.is-invalid]="showError('activityTitle')"
+          />
+          @if (showError('activityTitle')) {
+            <p class="field-error">Give the activity a short, descriptive title.</p>
+          }
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="serviceType">Service type</label>
+          <select id="serviceType" class="select" formControlName="serviceType">
+            @for (type of serviceTypes; track type) {
+              <option [value]="type">{{ type }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="status">Availability status</label>
+          <select id="status" class="select" formControlName="status">
+            <option value="published">Approved — visible to employees</option>
+            <option value="draft">Draft — hidden from employees</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <p class="field-hint">Employees can only register for approved activities.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          class="textarea"
+          formControlName="description"
+          placeholder="What will volunteers actually do on the day?"
+          [class.is-invalid]="showError('description')"
+        ></textarea>
+        @if (showError('description')) {
+          <p class="field-error">
+            Describe the work in at least thirty characters so employees know what to expect.
+          </p>
+        }
+      </div>
+    </fieldset>
+
+    <!-- Schedule, venue and capacity -->
+    <fieldset class="card stack">
+      <legend class="section-title">Schedule, venue and capacity</legend>
+
+      <div class="field">
+        <label for="location">Location</label>
+        <input
+          id="location"
+          class="input"
+          type="text"
+          formControlName="location"
+          [class.is-invalid]="showError('location')"
+        />
+        @if (showError('location')) {
+          <p class="field-error">A venue is required.</p>
+        }
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="activityDate">Activity date</label>
+          <input
+            id="activityDate"
+            class="input"
+            type="date"
+            formControlName="activityDate"
+            [class.is-invalid]="showError('activityDate')"
+          />
+        </div>
+        <div class="field">
+          <label for="startTime">Start time</label>
+          <input id="startTime" class="input" type="time" formControlName="startTime" />
+        </div>
+        <div class="field">
+          <label for="endTime">Finish time</label>
+          <input id="endTime" class="input" type="time" formControlName="endTime" />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="maxEmployees">Maximum employees</label>
+          <input
+            id="maxEmployees"
+            class="input"
+            type="number"
+            min="1"
+            max="500"
+            formControlName="maxEmployees"
+            [class.is-invalid]="showError('maxEmployees')"
+          />
+          <p class="field-hint">The number of volunteer slots the NGO can host.</p>
+        </div>
+
+        <div class="field">
+          <label for="registrationCutOff">Registration cut-off</label>
+          <input
+            id="registrationCutOff"
+            class="input"
+            type="datetime-local"
+            formControlName="registrationCutOff"
+            [class.is-invalid]="showError('registrationCutOff')"
+          />
+          <p class="field-hint">
+            After this moment employees can no longer register, change or withdraw.
+          </p>
+        </div>
+      </div>
+
+      @if (form.errors?.['endBeforeStart']) {
+        <p class="field-error">The finishing time must be later than the starting time.</p>
+      }
+      @if (form.errors?.['cutOffAfterStart']) {
+        <p class="field-error">The registration cut-off must fall before the activity begins.</p>
+      }
+
+      @if (isEditing() && activity()) {
+        <p class="form-note">
+          {{ activity()!.slotsTaken }} employee(s) have already registered. The maximum cannot be
+          set below that number, and changing the date, time or venue notifies every participant
+          automatically.
+        </p>
+      }
+    </fieldset>
+
+    <!-- NGO contact -->
+    <fieldset class="card stack">
+      <legend class="section-title">NGO contact</legend>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="contactPerson">Contact person</label>
+          <input
+            id="contactPerson"
+            class="input"
+            type="text"
+            formControlName="contactPerson"
+            [class.is-invalid]="showError('contactPerson')"
+          />
+        </div>
+        <div class="field">
+          <label for="contactEmail">Contact email</label>
+          <input
+            id="contactEmail"
+            class="input"
+            type="email"
+            formControlName="contactEmail"
+            [class.is-invalid]="showError('contactEmail')"
+          />
+          @if (showError('contactEmail')) {
+            <p class="field-error">Enter a valid email address.</p>
+          }
+        </div>
+      </div>
+    </fieldset>
+
+    @if (errorMessage()) {
+      <p class="form-error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    <div class="row-end">
+      <button type="button" class="btn" (click)="cancel()" [disabled]="saving()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : isEditing() ? 'Save changes' : 'Add activity' }}
+      </button>
+    </div>
+  </form>
+</div>

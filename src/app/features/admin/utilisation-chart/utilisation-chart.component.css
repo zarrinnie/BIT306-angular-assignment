@@ -1,0 +1,23 @@
+.chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.chart__caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* Chart.js sizes its canvas to this box, so the height is set here. */
+.chart__canvas {
+  position: relative;
+  width: 100%;
+  min-height: 12rem;
+}

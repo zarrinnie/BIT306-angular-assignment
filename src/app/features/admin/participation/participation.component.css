@@ -1,0 +1,24 @@
+.block {
+  display: block;
+}
+
+.meter-cell {
+  min-width: 10rem;
+}
+
+.meter-cell app-slot-meter {
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+/* An employee with no registrations is dimmed so the gaps stand out. */
+.row--none td {
+  color: var(--color-ink-500);
+}
+
+.table tfoot th,
+.table tfoot td {
+  font-weight: 700;
+  background-color: var(--color-surface-sunken);
+  border-top: 2px solid var(--color-line-strong);
+}

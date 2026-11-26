@@ -1,0 +1,70 @@
+<div class="page stack">
+  <app-page-header
+    eyebrow="Messages"
+    title="Your Service Day messages"
+    [subtitle]="
+      'Confirmations, reminders and announcements sent to ' + (currentUser()?.fullName ?? 'you') + '.'
+    "
+  >
+    <div class="row" role="group" aria-label="Filter messages">
+      <button
+        type="button"
+        class="btn btn-sm"
+        [class.btn-primary]="filter() === 'all'"
+        (click)="setFilter('all')"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        [class.btn-primary]="filter() === 'unread'"
+        (click)="setFilter('unread')"
+      >
+        Unread ({{ unreadCount() }})
+      </button>
+    </div>
+  </app-page-header>
+
+  @if (loading() && messages().length === 0) {
+    <app-loading-spinner label="Loading your messages…" />
+  } @else if (messages().length === 0) {
+    <app-empty-state
+      title="No messages"
+      message="Registration confirmations and reminders from the Service Day administrator will appear here."
+    />
+  } @else {
+    <ul class="messages">
+      @for (message of messages(); track message.id) {
+        <li>
+          <article class="message" [class.message--unread]="!message.read">
+            <header class="message__head">
+              <span class="badge" [class]="'badge-' + kindTone(message.kind)">
+                {{ kindLabel(message.kind) }}
+              </span>
+              <h2 class="message__subject">{{ message.subject }}</h2>
+              <time class="message__time text-xs muted" [attr.datetime]="message.createdAt">
+                {{ message.createdAt | date: 'd MMM y, HH:mm' }}
+              </time>
+            </header>
+
+            <p class="message__body">{{ message.message }}</p>
+
+            <footer class="message__foot">
+              @if (message.recipientId === 'ALL') {
+                <span class="text-xs muted">Sent to all employees</span>
+              }
+              @if (!message.read) {
+                <button type="button" class="btn btn-sm" (click)="markRead(message)">
+                  Mark as read
+                </button>
+              } @else {
+                <span class="text-xs muted">Read</span>
+              }
+            </footer>
+          </article>
+        </li>
+      }
+    </ul>
+  }
+</div>

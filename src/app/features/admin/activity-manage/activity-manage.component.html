@@ -1,0 +1,141 @@
+<div class="page stack">
+  <app-page-header
+    eyebrow="Administration"
+    title="NGO activity availability"
+    subtitle="Add, update or remove the Service Day activities offered to employees."
+  >
+    <a class="btn btn-primary" routerLink="/admin/activities/new">Add NGO activity</a>
+  </app-page-header>
+
+  <section class="card" aria-label="Filter activities">
+    <div class="manage__filters">
+      <div class="field grow">
+        <label for="manage-search">Search</label>
+        <input
+          id="manage-search"
+          class="input"
+          type="search"
+          placeholder="NGO, activity or location"
+          name="manageSearch"
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+        />
+      </div>
+      <div class="field">
+        <label for="manage-status">Status</label>
+        <select
+          id="manage-status"
+          class="select"
+          name="manageStatus"
+          [ngModel]="statusFilter()"
+          (ngModelChange)="statusFilter.set($event)"
+        >
+          <option value="all">All ({{ counts().all }})</option>
+          <option value="published">Approved ({{ counts().published }})</option>
+          <option value="draft">Draft ({{ counts().draft }})</option>
+          <option value="cancelled">Cancelled ({{ counts().cancelled }})</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  @if (loading() && activities().length === 0) {
+    <app-loading-spinner label="Loading NGO activities…" />
+  } @else if (activities().length === 0) {
+    <app-empty-state
+      title="No activities match"
+      message="Change the filters, or add a new NGO activity to the Service Day programme."
+    >
+      <a class="btn btn-primary" routerLink="/admin/activities/new">Add NGO activity</a>
+    </app-empty-state>
+  } @else {
+    <section class="card-flush">
+      <div class="table-scroll">
+        <table class="table">
+          <caption class="visually-hidden">
+            Every registered NGO activity with its availability and registration cut-off
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Activity</th>
+              <th scope="col">Service type</th>
+              <th scope="col">Date and time</th>
+              <th scope="col">Slots</th>
+              <th scope="col">Cut-off</th>
+              <th scope="col">Status</th>
+              <th scope="col"><span class="visually-hidden">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (activity of activities(); track activity.id) {
+              <tr>
+                <td class="wrap">
+                  <strong>{{ activity.activityTitle }}</strong>
+                  <span class="block text-xs muted">{{ activity.ngoName }}</span>
+                </td>
+                <td>{{ activity.serviceType }}</td>
+                <td>
+                  {{ activity.activityDate | date: 'd MMM y' }}
+                  <span class="block text-xs muted">
+                    {{ activity.startTime }}–{{ activity.endTime }}
+                  </span>
+                </td>
+                <td class="slots-cell">
+                  <span class="text-sm">
+                    {{ activity.slotsTaken }} / {{ activity.maxEmployees }}
+                  </span>
+                  <app-slot-meter
+                    [slotsTaken]="activity.slotsTaken"
+                    [maxEmployees]="activity.maxEmployees"
+                    [compact]="true"
+                  />
+                </td>
+                <td>
+                  {{ activity.registrationCutOff | date: 'd MMM, HH:mm' }}
+                  <span class="block text-xs muted">
+                    {{ activity.registrationCutOff | timeRemaining }}
+                  </span>
+                </td>
+                <td><app-status-badge [activity]="activity" /></td>
+                <td>
+                  <div class="row-end actions">
+                    <a
+                      class="btn btn-sm"
+                      [routerLink]="['/admin/activities', activity.id, 'edit']"
+                      >Edit</a
+                    >
+                    <a
+                      class="btn btn-sm"
+                      [routerLink]="['/admin/check-in']"
+                      [queryParams]="{ activityId: activity.id }"
+                      >QR</a
+                    >
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-danger"
+                      (click)="removing.set(activity)"
+                      [disabled]="busy()"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  <app-confirm-dialog
+    [open]="removing() !== null"
+    heading="Remove this NGO activity?"
+    [message]="removalMessage()"
+    confirmLabel="Remove activity"
+    [destructive]="true"
+    [busy]="busy()"
+    (confirmed)="confirmRemoval()"
+    (cancelled)="removing.set(null)"
+  />
+</div>

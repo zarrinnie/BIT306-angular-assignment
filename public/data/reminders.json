@@ -1,0 +1,218 @@
+[
+  {
+    "id": "M001",
+    "activityId": "A001",
+    "offsetDays": 7,
+    "sendAt": "2026-11-28T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M002",
+    "activityId": "A001",
+    "offsetDays": 3,
+    "sendAt": "2026-12-02T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M003",
+    "activityId": "A001",
+    "offsetDays": 1,
+    "sendAt": "2026-12-04T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M004",
+    "activityId": "A002",
+    "offsetDays": 7,
+    "sendAt": "2026-11-29T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M005",
+    "activityId": "A002",
+    "offsetDays": 3,
+    "sendAt": "2026-12-03T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M006",
+    "activityId": "A002",
+    "offsetDays": 1,
+    "sendAt": "2026-12-05T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M007",
+    "activityId": "A003",
+    "offsetDays": 7,
+    "sendAt": "2026-12-05T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M008",
+    "activityId": "A003",
+    "offsetDays": 3,
+    "sendAt": "2026-12-09T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M009",
+    "activityId": "A003",
+    "offsetDays": 1,
+    "sendAt": "2026-12-11T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M010",
+    "activityId": "A004",
+    "offsetDays": 7,
+    "sendAt": "2026-12-06T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M011",
+    "activityId": "A004",
+    "offsetDays": 3,
+    "sendAt": "2026-12-10T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M012",
+    "activityId": "A004",
+    "offsetDays": 1,
+    "sendAt": "2026-12-12T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M013",
+    "activityId": "A005",
+    "offsetDays": 7,
+    "sendAt": "2026-11-21T09:00:00",
+    "sent": true,
+    "sentAt": "2026-11-21T09:00:00"
+  },
+  {
+    "id": "M014",
+    "activityId": "A005",
+    "offsetDays": 3,
+    "sendAt": "2026-11-25T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M015",
+    "activityId": "A005",
+    "offsetDays": 1,
+    "sendAt": "2026-11-27T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M016",
+    "activityId": "A006",
+    "offsetDays": 7,
+    "sendAt": "2026-12-12T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M017",
+    "activityId": "A006",
+    "offsetDays": 3,
+    "sendAt": "2026-12-16T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M018",
+    "activityId": "A006",
+    "offsetDays": 1,
+    "sendAt": "2026-12-18T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M019",
+    "activityId": "A007",
+    "offsetDays": 7,
+    "sendAt": "2027-01-02T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M020",
+    "activityId": "A007",
+    "offsetDays": 3,
+    "sendAt": "2027-01-06T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M021",
+    "activityId": "A007",
+    "offsetDays": 1,
+    "sendAt": "2027-01-08T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M022",
+    "activityId": "A008",
+    "offsetDays": 7,
+    "sendAt": "2027-01-09T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M023",
+    "activityId": "A008",
+    "offsetDays": 3,
+    "sendAt": "2027-01-13T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M024",
+    "activityId": "A008",
+    "offsetDays": 1,
+    "sendAt": "2027-01-15T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M025",
+    "activityId": "A009",
+    "offsetDays": 7,
+    "sendAt": "2026-12-13T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M026",
+    "activityId": "A009",
+    "offsetDays": 3,
+    "sendAt": "2026-12-17T09:00:00",
+    "sent": false,
+    "sentAt": null
+  },
+  {
+    "id": "M027",
+    "activityId": "A009",
+    "offsetDays": 1,
+    "sendAt": "2026-12-19T09:00:00",
+    "sent": false,
+    "sentAt": null
+  }
+]

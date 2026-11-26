@@ -1,0 +1,180 @@
+<div class="page stack">
+  <app-page-header
+    eyebrow="Service Day 2026"
+    title="My registrations"
+    subtitle="Change or withdraw from an activity at any time before its registration cut-off."
+  >
+    <a class="btn btn-primary" routerLink="/activities">Browse opportunities</a>
+  </app-page-header>
+
+  <section class="stat-row" aria-label="Your participation">
+    <app-stat-card
+      label="Registered activities"
+      [value]="summary().total"
+      tone="primary"
+      hint="Including completed ones"
+    />
+    <app-stat-card
+      label="Still editable"
+      [value]="summary().editable"
+      hint="Cut-off has not passed"
+      tone="info"
+    />
+    <app-stat-card label="Attended" [value]="summary().attended" hint="Checked in on the day" />
+  </section>
+
+  @if (loading() && registrations().length === 0) {
+    <app-loading-spinner label="Loading your registrations…" />
+  } @else if (registrations().length === 0) {
+    <app-empty-state
+      title="You have not registered for any activity yet"
+      message="Browse the approved NGO activities and reserve a slot before the cut-off date."
+    >
+      <a class="btn btn-primary" routerLink="/activities">Browse opportunities</a>
+    </app-empty-state>
+  } @else {
+    <ul class="registrations">
+      @for (registration of registrations(); track registration.id) {
+        <li>
+          <article class="registration">
+            <header class="registration__head">
+              <div class="grow">
+                <p class="registration__ngo">{{ registration.ngoName }}</p>
+                <h2 class="registration__title">
+                  <a [routerLink]="['/activities', registration.activityId]">
+                    {{ registration.activityTitle }}
+                  </a>
+                </h2>
+              </div>
+              <span class="badge" [class]="'badge-' + statusTone(registration)">
+                {{ statusLabel(registration) }}
+              </span>
+            </header>
+
+            <dl class="detail-list">
+              <div>
+                <dt>Date</dt>
+                <dd>{{ registration.activityDate | date: 'EEE, d MMM y' }}</dd>
+              </div>
+              <div>
+                <dt>Time</dt>
+                <dd>{{ registration.startTime }} – {{ registration.endTime }}</dd>
+              </div>
+              <div>
+                <dt>Location</dt>
+                <dd>{{ registration.location }}</dd>
+              </div>
+              <div>
+                <dt>Registered on</dt>
+                <dd>{{ registration.registeredAt | date: 'd MMM y, HH:mm' }}</dd>
+              </div>
+            </dl>
+
+            <footer class="registration__foot">
+              <p class="text-xs">
+                <span class="muted">Editing window: </span>
+                <strong [class.registration__closed]="!registration.canBeEdited">
+                  {{ registration.registrationCutOff | timeRemaining }}
+                </strong>
+              </p>
+
+              @if (registration.canBeEdited) {
+                <div class="row-end grow">
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    (click)="startChange(registration)"
+                    [disabled]="busy()"
+                  >
+                    Change activity
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    (click)="withdrawing.set(registration)"
+                    [disabled]="busy()"
+                  >
+                    Withdraw
+                  </button>
+                </div>
+              } @else if (registration.status === 'confirmed') {
+                <p class="text-xs muted">
+                  The cut-off has passed. Please contact the Service Day administrator if your plans
+                  have changed.
+                </p>
+              }
+            </footer>
+
+            <!-- Change panel, shown inline for the selected registration -->
+            @if (changingId() === registration.id) {
+              <section class="change" aria-label="Move to another activity">
+                <h3 class="section-title">Move to another activity</h3>
+
+                @if (alternatives().length === 0) {
+                  <p class="text-sm muted">
+                    There is no other activity with free slots and an open cut-off at the moment.
+                  </p>
+                } @else {
+                  <div class="change__controls">
+                    <div class="field grow">
+                      <label [attr.for]="'replacement-' + registration.id">New activity</label>
+                      <select
+                        [attr.id]="'replacement-' + registration.id"
+                        class="select"
+                        [ngModel]="replacementId()"
+                        (ngModelChange)="replacementId.set($event)"
+                        [name]="'replacement-' + registration.id"
+                      >
+                        <option value="">Choose an activity…</option>
+                        @for (activity of alternatives(); track activity.id) {
+                          <option [value]="activity.id">
+                            {{ activity.activityDate | date: 'd MMM' }} —
+                            {{ activity.activityTitle }} ({{ activity.ngoName }}),
+                            {{ activity.availability.slotsRemaining }} slots left
+                          </option>
+                        }
+                      </select>
+                    </div>
+
+                    <div class="row-end">
+                      <button type="button" class="btn btn-sm" (click)="cancelChange()">
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-primary"
+                        (click)="confirmChange(registration)"
+                        [disabled]="busy()"
+                      >
+                        {{ busy() ? 'Moving…' : 'Confirm change' }}
+                      </button>
+                    </div>
+                  </div>
+                  <p class="text-xs muted">
+                    Your current slot is released and the new one is taken in a single step, so
+                    neither activity is ever double-counted.
+                  </p>
+                }
+              </section>
+            }
+          </article>
+        </li>
+      }
+    </ul>
+  }
+
+  <app-confirm-dialog
+    [open]="withdrawing() !== null"
+    heading="Withdraw from this activity?"
+    [message]="
+      'Your slot on ' +
+      (withdrawing()?.activityTitle ?? '') +
+      ' will be released and offered to other employees. You may register again later if a slot is still free.'
+    "
+    confirmLabel="Withdraw"
+    [destructive]="true"
+    [busy]="busy()"
+    (confirmed)="withdraw()"
+    (cancelled)="withdrawing.set(null)"
+  />
+</div>
